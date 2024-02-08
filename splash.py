@@ -4,8 +4,7 @@ import time
  
 # activate the pygame library .
 pygame.init()
-RES = (1280, 720)
- 
+
 # create the display surface object
 # of specific dimension..e(X, Y).
 screen = pygame.display.set_mode()
