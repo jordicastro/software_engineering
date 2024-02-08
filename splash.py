@@ -1,10 +1,11 @@
 # importing required library
 import pygame
 import time
+import keyboard
  
 # activate the pygame library .
 pygame.init()
-
+ 
 # create the display surface object
 # of specific dimension..e(X, Y).
 screen = pygame.display.set_mode()
@@ -23,7 +24,16 @@ screen.blit(imp, (0, 0))
 pygame.display.flip()
 
 # stays open for 5 seconds
-time.sleep(5)
- 
+slp_segs = 50 # Number of segments
+slp_len = 5 # 5 seconds
+for i in range(slp_segs):
+    time.sleep(slp_len/slp_segs)
+
+    # allows the splash screen to be closed by pressing the escape key
+    if keyboard.is_pressed('escape'):
+        break
+
+
+
 # deactivates the pygame library
 pygame.quit()
