@@ -5,8 +5,7 @@ import pygame
 pygame.init()
 
 desktop = pygame.display.Info()
-screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
-
+screen = pygame.display.set_mode((desktop.current_w-10, desktop.current_h-50))
 clock = pygame.time.Clock()
 
 
@@ -33,7 +32,8 @@ def game():
     splashScreen()
     screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
     while running:
-        
+        X = int(screen.get_width())
+        Y = int(screen.get_height())
         #Wiping after logo
         pygame.display.set_caption('Player Selection')
         screen.fill("black")
@@ -46,6 +46,7 @@ def game():
         pygame.display.flip()
 
         clock.tick(60)  # limits FPS to 60
+        
         # allows the splash screen to be closed by pressing the escape key
         if keyboard.is_pressed('escape'):
             pygame.quit()
@@ -55,8 +56,6 @@ def game():
             if event.type == pygame.QUIT:
                 # Quit the game
                 pygame.quit()
-                
-
             # Check for the fullscreen toggle event
             if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
                 # Toggle fullscreen mode
