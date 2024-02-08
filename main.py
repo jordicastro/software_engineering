@@ -1,12 +1,12 @@
-
+from splash import *
+import keyboard
 import pygame
-
-
 # pygame setup
 pygame.init()
+
 desktop = pygame.display.Info()
 screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
-pygame.display.set_caption('Photon')
+
 clock = pygame.time.Clock()
 
 
@@ -30,8 +30,12 @@ def title():
     return screen.blit(title, textRect)
 def game():
     running = True
+    splashScreen()
+    screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
     while running:
+        
         #Wiping after logo
+        pygame.display.set_caption('Player Selection')
         screen.fill("black")
         title()
         # Setup player selection environment
@@ -42,14 +46,27 @@ def game():
         pygame.display.flip()
 
         clock.tick(60)  # limits FPS to 60
+        # allows the splash screen to be closed by pressing the escape key
+        if keyboard.is_pressed('escape'):
+            pygame.quit()
+        # Check for events
         for event in pygame.event.get():
+            # Check for the quit event
             if event.type == pygame.QUIT:
-                running = False
+                # Quit the game
+                pygame.quit()
+                
 
-    pygame.quit()
+            # Check for the fullscreen toggle event
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+                # Toggle fullscreen mode
+                pygame.display.toggle_fullscreen()
+
+    
 
 
 
 # Run Game
 game()
+
 
