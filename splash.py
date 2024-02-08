@@ -2,7 +2,6 @@
 import pygame
 import time
 import keyboard
-import os
 
 def splashScreen():
     
