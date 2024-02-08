@@ -1,39 +1,55 @@
-# Example file showing a basic pygame "game loop"
 import pygame
+
 
 # pygame setup
 pygame.init()
 desktop = pygame.display.Info()
 screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
-
+pygame.display.set_caption('Photon')
 clock = pygame.time.Clock()
-running = True
 
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
 
-    
- 
-    # Initializing Color
-    color = (128, 23, 23)
-    
-    # Drawing Rectangle
-    pygame.draw.rect(screen, color, pygame.Rect(100, 50, int(screen.get_width()/2), int(screen.get_height()-150)))
+#Screen coordinates
+X = int(screen.get_width())
+Y = int(screen.get_height())
 
-    color = (17, 122, 13)
-    pygame.draw.rect(screen, color, pygame.Rect(int(screen.get_width()/2), 50, int(screen.get_width()/2)-100, int(screen.get_height()-150)))
-    
 
-    pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+# Initializing Color
+red = (128, 23, 23)
+green = (17, 122, 13)
 
-pygame.quit()
+#title setup
+def title():
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    title = font.render('Edit Current Game', True, (255,255,255), (0,0,0))
+    textRect = title.get_rect()
+    textRect.center = (X // 2, textRect.bottom)
+    return screen.blit(title, textRect)
+def game():
+    running = True
+    while running:
+        #Wiping after logo
+        screen.fill("black")
+        title()
+        # Setup player selection environment
+        pygame.draw.rect(screen, red, pygame.Rect(100, 50, X/2, Y-150))
+        pygame.draw.rect(screen, green, pygame.Rect((X/2), 50, X/2-100, Y-150))
+        
+
+        pygame.display.flip()
+
+        clock.tick(60)  # limits FPS to 60
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    pygame.quit()
+
+
+
+# Run Game
+game()
+
+
