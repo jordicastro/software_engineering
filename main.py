@@ -1,3 +1,4 @@
+
 import pygame
 
 
@@ -51,5 +52,4 @@ def game():
 
 # Run Game
 game()
-
 
