@@ -1,8 +1,7 @@
 # importing required library
 import pygame
 import time
-import keyboard
-
+import sys
 def splashScreen():
     # activate the pygame library .
     pygame.init()
@@ -31,8 +30,10 @@ def splashScreen():
         time.sleep(slp_len/slp_segs)
 
         # allows the splash screen to be closed by pressing the escape key
-        if keyboard.is_pressed('escape'):
-            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit() 
+                sys.exit()
 
 
 

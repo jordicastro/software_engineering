@@ -1,7 +1,6 @@
 from splash import *
-import keyboard
 import pygame
-import sys
+
 # pygame setup
 pygame.init()
 
@@ -20,36 +19,21 @@ green = (17, 122, 13)
 #title setup
 def title():
     font = pygame.font.Font('freesansbold.ttf', 32)
-    title = font.render('Edit Current Game', True, (255,255,255), (0,0,0))
+    title = font.render('Edit Current Game', True, ("white"), ("black"))
     textRect = title.get_rect()
     textRect.center = (X // 2, textRect.bottom)
     return screen.blit(title, textRect)
-def input_box():
-
-
-
-    return
-
-
 #Event function
 def events():
-    # allows the splash screen to be closed by pressing the escape key
-    if keyboard.is_pressed('escape'):
-        pygame.quit()
-        sys.exit()
     # Check for events
     for event in pygame.event.get():
-        # Check for the quit event
-        if event.type == pygame.QUIT:
-            # Quit the game
-            pygame.quit()
-            sys.exit()
         # Check for the fullscreen toggle event
         if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
             # Toggle fullscreen mode
             pygame.display.toggle_fullscreen()
+            background()
         # if user types QUIT then the screen will close 
-        if event.type == pygame.QUIT: 
+        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pygame.quit() 
             sys.exit() 
     return
