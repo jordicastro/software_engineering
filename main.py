@@ -9,37 +9,13 @@ desktop = pygame.display.Info()
 screen = pygame.display.set_mode((desktop.current_w-10, desktop.current_h-50))
 clock = pygame.time.Clock()
 
-
-
 #Screen coordinates
 X = int(screen.get_width())
 Y = int(screen.get_height())
 
-
-
 # Initializing Color
 red = (128, 23, 23)
 green = (17, 122, 13)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #title setup
 def title():

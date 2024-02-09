@@ -15,7 +15,7 @@ def splashScreen():
     pygame.display.set_caption('Splash Image')
     
     # create a surface object, image is drawn on it.
-    imp = pygame.image.load("logo.jpg").convert()
+    imp = pygame.image.load("resources/logo.jpg").convert()
     imp = pygame.transform.scale(imp, (screen.get_size()))
     
     # Using blit to copy content from one surface to other
