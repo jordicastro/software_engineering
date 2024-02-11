@@ -17,16 +17,16 @@ def handle_client(conn, addr): # conn is socket obj, addr is info about connecti
     print(f'[NEW CONNECTION] {addr} connected.')
     connected = True
     while connected:
-        msg = conn.decode(FORMAT)
+        data, addr = conn.recvfrom(1024) #receive data from client
+        msg = data.decode(FORMAT) # decode data
         print(f'[{addr}] {msg}')
 
-        conn.send(f'msg {msg} received'.encode(FORMAT))
+        conn.sendto(f'msg {msg} received'.encode(FORMAT), addr) # send response back to client
 def start():
-    server.listen()
-    print(f'[LISTENING] server is lisening on {server}')
+    print(f'[LISTENING] server is listening on {server}')
 
     while True: #continuous listening
-        conn, addr = server.accept() # new connection to server
+        data, addr = server.recvfrom(1024)
         thread = threading.Thread(target=handle_client, args=(conn, addr)) # send info to handle_client
         thread.start()
         print(f'[ACTIVE CONECTIONS] {threading.activeCount() -1}')
