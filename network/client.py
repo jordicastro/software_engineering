@@ -13,3 +13,5 @@ def send(msg):
     message = msg.encode(FORMAT) # to string
 
     client.send(message)
+
+send('test')
