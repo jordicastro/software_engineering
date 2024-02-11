@@ -4,11 +4,13 @@ import time
 from typing import List, Dict, Tuple, Optional
 
 bufferSize = 1024
-broadcastPort = 7500
-receivePort = 7501
+broadcastPort = 7500 # server is broadcasting
+receivePort = 7501 # client receives 
 
-serverAddress = ('127.0.0.1', broadcastPort)
+serverAddress = ('127.0.0.1', broadcastPort) # tuple (server, port)
 clientAddress = ('127.0.0.1', receivePort)
+
+disconnect_message = '!DISCONNECT'
 
 # Create datagram sockets
 UDPServerSocketReceive = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -16,6 +18,8 @@ UDPClientSocketTransmit = socket.socket(family=socket.AF_INET, type=socket.SOCK_
 
 # bind server socket
 UDPServerSocketReceive.bind(serverAddress)
+# connect client socket
+UDPClientSocketTransmit.connect(clientAddress)
 
 # final global vars
 ADDPOINTS = 100
@@ -32,7 +36,7 @@ class Player:
         self.points += ADDPOINTS
 
 # players array
-players : [Player]= []
+players = []
 
 # add test players
 player1 : Player = Player('010947283_id', 'jordinosaur', 'red', 0)
