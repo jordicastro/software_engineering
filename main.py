@@ -1,4 +1,4 @@
-from splash import *
+from splash import splashScreen
 import keyboard
 import pygame
 import sys
