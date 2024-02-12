@@ -18,13 +18,14 @@ TODO
 
 ## How to set up the development environment
 
-1. Clone the repository:
+1. Clone the repository and navigate to the project directory:
 
    ```sh
     git clone https://github.com/jordicastro/software_engineering.git
+    cd software_engineering
     ```
 
-2. Create a virtual environment:
+2. Create a python virtual environment:
 
    **Linux/MacOS**
 
@@ -52,7 +53,7 @@ TODO
     venv\Scripts\activate
     ```
 
-4. Install the required packages:
+4. Install the required python packages:
 
     ```sh
     pip install -r requirements.txt
