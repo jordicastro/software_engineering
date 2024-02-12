@@ -1,4 +1,4 @@
-from photon_tag.splash import splashScreen
+from splash import splashScreen
 import pygame
 import sys
 
@@ -53,8 +53,9 @@ def events():
             # Toggle fullscreen mode
             if event.key == pygame.K_F11:
                 pygame.display.toggle_fullscreen()
-            # Quit the game
+            # Check for the quit event
             if event.key == pygame.K_ESCAPE:
+                # Quit the game
                 pygame.quit()
                 sys.exit()
 
