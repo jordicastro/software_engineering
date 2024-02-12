@@ -1,7 +1,26 @@
 # importing required library
-import pygame, time, sys, os
+import pygame,time, sys, os
 
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+os.environ['SDL_VIDEO_CENTERED'] = '1' 
+
+def events():
+    # Check for events
+    for event in pygame.event.get():
+        # Check for the quit event
+        if event.type == pygame.QUIT:
+            # Quit the game
+            pygame.quit()
+            sys.exit()
+        # Check for the fullscreen toggle event
+        if event.type == pygame.KEYDOWN:
+            # Toggle fullscreen mode
+            if event.key == pygame.K_F11:
+                pygame.display.toggle_fullscreen()
+            # Check for the quit event
+            if event.key == pygame.K_ESCAPE:
+                # Quit the game
+                pygame.quit()
+                sys.exit()
 
 def splashScreen():
     # activate the pygame library .
