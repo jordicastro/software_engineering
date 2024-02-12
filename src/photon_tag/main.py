@@ -1,4 +1,4 @@
-from splash import splashScreen
+from photon_tag.splash import splashScreen
 import pygame
 import sys
 
