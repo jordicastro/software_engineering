@@ -1,4 +1,6 @@
-from splash import *
+from splash import splashScreen
+import pygame
+import sys
 # pygame setup
 pygame.init()
 
@@ -26,7 +28,7 @@ def events():
     # Check for events
     for event in pygame.event.get():
         # Check for the fullscreen toggle event
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+        if event.type == pygame.KEYDOWN:
             # Toggle fullscreen mode
             pygame.display.toggle_fullscreen()
             background()
