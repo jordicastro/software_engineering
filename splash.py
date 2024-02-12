@@ -1,7 +1,8 @@
 # importing required library
-import pygame
-import time
-import sys
+import pygame, time, sys, os
+
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
 def splashScreen():
     # activate the pygame library .
     pygame.init()

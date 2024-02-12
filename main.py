@@ -1,6 +1,4 @@
 from splash import *
-import pygame
-
 # pygame setup
 pygame.init()
 
@@ -56,7 +54,7 @@ def game():
         X = int(screen.get_width())
         Y = int(screen.get_height())
         pygame.display.flip()
-        clock.tick(60)  # limits FPS to 60
+        clock.tick(600)  # limits FPS to 60
         events()
         print('fps is: ' + str(clock.get_fps()))
 # Run Game
