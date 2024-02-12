@@ -26,13 +26,13 @@ TODO
 
 2. Create a virtual environment:
 
-   1. **Linux/MacOS**
+   **Linux/MacOS**
 
     ```sh
     python3 -m venv venv
     ```
 
-   2. **Windows**
+   **Windows**
 
     ```powershell
     python -m venv venv
@@ -40,13 +40,13 @@ TODO
 
 3. Activate the virtual environment:
 
-   1. **Linux/MacOS**
+   **Linux/MacOS**
 
     ```sh
     source venv/bin/activate
     ```
 
-   2. **Windows**
+   **Windows**
 
     ```powershell
     venv\Scripts\activate
