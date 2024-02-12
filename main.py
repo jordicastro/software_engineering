@@ -1,5 +1,4 @@
-from splash import *
-import keyboard
+from splash import splashScreen
 import pygame
 import sys
 # pygame setup
@@ -41,10 +40,6 @@ def input_box():
 
 #Event function
 def events():
-    # allows the splash screen to be closed by pressing the escape key
-    if keyboard.is_pressed('escape'):
-        pygame.quit()
-        sys.exit()
     # Check for events
     for event in pygame.event.get():
         # Check for the quit event
@@ -53,12 +48,15 @@ def events():
             pygame.quit()
             sys.exit()
         # Check for the fullscreen toggle event
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+        if event.type == pygame.KEYDOWN:
             # Toggle fullscreen mode
-            pygame.display.toggle_fullscreen()
-
-    return
-
+            if event.key == pygame.K_F11:
+                pygame.display.toggle_fullscreen()
+            # Check for the quit event
+            if event.key == pygame.K_ESCAPE:
+                # Quit the game
+                pygame.quit()
+                sys.exit()
 
 
 def game():
