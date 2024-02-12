@@ -24,7 +24,21 @@ TODO
     git clone https://github.com/jordicastro/software_engineering.git
     ```
 
-2. Activate the virtual environment:
+2. Create a virtual environment:
+
+   1. **Linux/MacOS**
+
+    ```sh
+    python3 -m venv venv
+    ```
+
+   2. **Windows**
+
+    ```powershell
+    python -m venv venv
+    ```
+
+3. Activate the virtual environment:
 
    1. **Linux/MacOS**
 
@@ -38,7 +52,7 @@ TODO
     venv\Scripts\activate
     ```
 
-3. Install the required packages:
+4. Install the required packages:
 
     ```sh
     pip install -r requirements.txt
