@@ -14,7 +14,24 @@ Team Number: 19
 
 ## How to run the project
 
-TODO
+1. Clone the repository and navigate to the project directory:
+
+   ```sh
+    git clone https://github.com/jordicastro/software_engineering.git
+    cd software_engineering
+    ```
+
+2. Run the main script:
+
+   ```sh
+   python main.py
+   ```
+
+3. If you want to test the supabase integration
+
+   ```sh
+   python database.py
+   ```
 
 ## How to set up the development environment
 
