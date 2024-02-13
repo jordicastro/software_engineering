@@ -1,5 +1,4 @@
 from splash import splashScreen
-from inputs import InputBox
 import pygame
 import sys
 
