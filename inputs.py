@@ -15,7 +15,8 @@ class InputBox:
     def flip_active(self):
         self.active = not self.active
         self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
-        
+    def clear(self):
+        self.text = ''
     def handle_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
@@ -27,10 +28,11 @@ class InputBox:
             # Change the current color of the input box.
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
         if event.type == pg.KEYDOWN:
+            if event.key == pg.K_F12:
+                self.text = ''
             if self.active:
                 if event.key == pg.K_RETURN: #this will be where the code interfaces with server
                     print(self.text)
-                    
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == pg.K_TAB:

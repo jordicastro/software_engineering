@@ -43,14 +43,16 @@ def events(input_boxes):
             pygame.quit() 
             sys.exit() 
         elif event.type == pygame.KEYDOWN:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_ESCAPE:
                 pygame.quit() 
                 sys.exit() 
             if event.key == pygame.K_F11:
                 # Toggle fullscreen mode
                 pygame.display.toggle_fullscreen()
-                background()   
-    return
+                background()
+            if event.key == pygame.K_F12:
+                input_boxes = inputBoxLoad()
+    return input_boxes
 def background():
     #Wiping after logo
     pygame.display.set_caption('Player Selection')
@@ -104,7 +106,7 @@ def game():
             box.draw(screen)
         pygame.display.flip()
         clock.tick(60)  # limits FPS to 60
-        events(input_boxes)
+        input_boxes = events(input_boxes)
 
 # Run Game
 game()
