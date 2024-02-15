@@ -1,13 +1,13 @@
 import socket
 from typing import List, Dict, Tuple, Optional
 
-PORT = 7501
+PORT = 7500
 FORMAT = 'utf-8'
 SERVER = '127.0.0.1'
 ADDR = (SERVER, PORT)
 
 class Client:
-    def __init__(self, SERVER='127.0.0.1', PORT=7501) -> None:
+    def __init__(self, SERVER='127.0.0.1', PORT=7500) -> None:
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
         self.client = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -28,8 +28,8 @@ class Client:
 player1 = Client()
 player1.send_id('0123456')
 
-player2 = Client()
-player2.send_id('6543210')
+# player2 = Client()
+# player2.send_id('6543210')
 
 # ...
 '''
