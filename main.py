@@ -1,4 +1,5 @@
 from splash import splashScreen
+from inputs import InputBox
 import pygame
 import sys
 
@@ -32,18 +33,23 @@ def textBox(input, bg, textColor, x, y):
     return screen.blit(text, textRect)
 
 #Event function
-def events():
+def events(input_boxes):
     # Check for events
     for event in pygame.event.get():
-        # Check for the fullscreen toggle event
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
-            # Toggle fullscreen mode
-            pygame.display.toggle_fullscreen()
-            background()
+        for i, box in enumerate(input_boxes):
+            box.handle_event(event)
         # if user types QUIT then the screen will close 
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        if event.type == pygame.QUIT:
             pygame.quit() 
             sys.exit() 
+        elif event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit() 
+                sys.exit() 
+            if event.key == pygame.K_F11:
+                # Toggle fullscreen mode
+                pygame.display.toggle_fullscreen()
+                background()   
     return
 def background():
     #Wiping after logo
@@ -61,24 +67,44 @@ def background():
     # Setup player selection environment
     pygame.draw.rect(screen, red, pygame.Rect(redX, redY, redW, redH))
     pygame.draw.rect(screen, green, pygame.Rect(greenX, greenY, greenW, greenH))
-    textBox("ID", red, "white", (-100+redX+redW/4), redY+30)
-    textBox("ID", green, "white", (greenX+greenW/4), greenY+30)
+    textBox("ID", red, "white", (-100+redX+redW/4)+20, redY+30)
+    textBox("ID", green, "white", (greenX+greenW/4)+20, greenY+30)
     textBox("Name", red, "white", -100+redX+3*(redW/4), redY+30)
     textBox("Name", green, "white", greenX+3*(greenW/4), greenY+30)
     
-    
+def inputBoxLoad():
+    inputBoxes = []
+    numberBoxes = 15
+    startY = 140
+    boxHeight = 32
+    endHeight = numberBoxes * boxHeight + startY
+    redBoxX = ((X/2-100)/4+100)/2
+    greenBoxX = X/2+(X/2-100)/4 -80
+    for i in range(startY,endHeight,boxHeight): # range(starting y, ending y, increment y)
+        temp = InputBox(redBoxX, i, 140, boxHeight) # X, Y, W, H
+        inputBoxes.append(temp)
+    for i in range(startY,endHeight,boxHeight): # range(starting y, ending y, increment y)
+        temp = InputBox(greenBoxX, i, 140, boxHeight) # X, Y, W, H
+        inputBoxes.append(temp)
+    return inputBoxes
     
 def game():
     running = True
     splashScreen()
     screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
     background()
+    input_boxes = inputBoxLoad()
     while running:
         X = int(screen.get_width())
         Y = int(screen.get_height())
+        for box in input_boxes:
+            box.update()
+        background()
+        for box in input_boxes:
+            box.draw(screen)
         pygame.display.flip()
         clock.tick(60)  # limits FPS to 60
-        events()
+        events(input_boxes)
 
 # Run Game
 game()
