@@ -17,6 +17,10 @@ class InputBox:
         self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
     def clear(self):
         self.text = ''
+    def getActive(self):
+        return self.active
+    def getText(self):
+        return self.text
     def handle_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
@@ -36,8 +40,9 @@ class InputBox:
                 elif event.key == pg.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == pg.K_TAB:
-                    self.active = False
-                    self.color = COLOR_INACTIVE
+                    self.text = self.text
+                elif event.key == pg.K_DELETE:
+                    self.text = ""
                 else:
                     self.text += event.unicode
                 # Re-render the text.
@@ -58,7 +63,10 @@ class InputLine:
         self.id = InputBox(x, y, w, h)
         self.name = InputBox(x+w, y, w, h)
         self.inputLine = [self.id, self.name]
-
+    def getIDBox(self):
+        return self.id
+    def getNameBox(self):
+        return self.name
     def getID(self):
         return self.id.text
     def getName(self):
