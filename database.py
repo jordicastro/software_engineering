@@ -9,6 +9,9 @@ class Database:
         self.supabase.auth.sign_in_with_password(credentials={"email": "team_19@software.engineering.org", "password": "D1seng@ge"})
         self.table = "players"
 
+    def close(self):
+        self.supabase.auth.sign_out()
+
     # Read the data from the table
     def read(self):
         ret = self.supabase.table(self.table).select("*").execute()
@@ -59,3 +62,17 @@ class Database:
         ret = self.supabase.table(self.table).delete().eq('player_id', id).execute()
         # Return whether the delete was successful
         return True
+
+    # Check if the player_id exists in the table
+    def check_id(self, player_id):
+        # Check if the player_id exists
+        ret = self.supabase.table(self.table).select("*").eq('player_id', player_id).execute()
+        # Return whether the player_id exists
+        return len(ret.data) > 0
+
+    # Select a row from the table
+    def select(self, player_id):
+        # Select the row
+        ret = self.supabase.table(self.table).select("*").eq('player_id', player_id).execute()
+        # Return the selected row
+        return ret.data[0]

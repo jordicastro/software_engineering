@@ -4,6 +4,9 @@ from database import Database
 import pygame
 import sys
 
+# Database setup
+db = Database()
+
 # pygame setup
 pygame.init()
 desktop = pygame.display.Info()
@@ -45,10 +48,12 @@ def events(input_boxes, idCheck):
         # if user types QUIT then the screen will close
         if event.type == pygame.QUIT:
             pygame.quit()
+            db.close()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
+                db.close()
                 sys.exit()
             if event.key == pygame.K_F11:
                 # Toggle fullscreen mode

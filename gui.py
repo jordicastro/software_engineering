@@ -74,6 +74,13 @@ class InputLine:
         return self.id.text
     def getName(self):
         return self.name.text
+    def setID(self, text):
+        self.id.text = text
+    def setName(self, text):
+        self.name.text = text
+    def clear(self):
+        self.id.clear()
+        self.name.clear()
     def draw(self, screen):
         self.id.draw(screen)
         self.name.draw(screen)
