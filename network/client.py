@@ -1,35 +1,45 @@
 import socket
-from typing import List, Dict, Tuple, Optional
 
-PORT = 7501
+PORT = 7500
 FORMAT = 'utf-8'
 SERVER = '127.0.0.1'
 ADDR = (SERVER, PORT)
 
 class Client:
-    def __init__(self, SERVER='127.0.0.1', PORT=7501) -> None:
+    def __init__(self, SERVER='127.0.0.1', PORT=7500) -> None:
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
-        self.client = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        # self.client.connect(self.ADDR)
+        self.socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
+    # send initial connection
     def send(self, msg):
         message = msg.encode(self.FORMAT)
-        self.client.sendto(message, self.ADDR)
+        self.socket.sendto(message, self.ADDR)
 
     # transmit equipment codes after each player addition
     def send_id(self, player_id): # sends id of newly created player & id of player hit
+        # encoding id
         message = player_id.encode(self.FORMAT)
-        self.client.sendto(message, self.ADDR)
+        # sending msg to server
+        self.socket.sendto(message, self.ADDR)
 
-# client = Client()
-# client.send('test')
-        
+    def handle_server(self):
+        # wait for server to return message
+        data, addr = self.socket.recvfrom(1024)
+        # decode msg
+        msg = data.decode(FORMAT)
+        print(f'[CLIENT] message from server: {msg}')
+
+    
 player1 = Client()
+player1.send(' player1 establishing connection')
+# -----
 player1.send_id('0123456')
 
-player2 = Client()
-player2.send_id('6543210')
+print('handling server response')
+player1.handle_server()
+# player2 = Client()
+# player2.send_id('6543210')
 
 # ...
 '''
