@@ -1,5 +1,8 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
+
+from database import Database
+
 import pygame
 import sys
 
@@ -38,7 +41,9 @@ def events(input_boxes, idCheck):
     for event in pygame.event.get():
         for i, box in enumerate(input_boxes):
             box.handle_event(event)
+
         idCheck.handle_event(event)
+
         # if user types QUIT then the screen will close
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -94,7 +99,9 @@ def inputBoxLoad():
 
 def addPlayer():
     print('Add Player pressed')
+
     print('Id Field ' + idField.getText())
+
 
 def onStart():
     print('Start pressed')
@@ -110,7 +117,9 @@ def game():
     # Player ID input
     idField = InputBox(X/2-100, Y/2+150, 200, 32)
     # Add Player button
-    addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', idField.getText())
+
+    addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', addPlayer)
+
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, 'Start', onStart)
 

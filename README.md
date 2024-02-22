@@ -75,3 +75,19 @@ Team Number: 19
     ```sh
     pip install -r requirements.txt
     ```
+
+## How to play Photon
+
+1. Run ```main.py```
+
+2. Press ```KEY``` to add players
+
+2. Press ```F12``` to clear all players
+
+3. Once all players have been added, press ```F5``` to start the game
+
+4. The game will take 6 minutes
+
+5. Check the display window to see updates for which team is winning
+
+6. When the game is completer, return to the home base to see which team wins!
