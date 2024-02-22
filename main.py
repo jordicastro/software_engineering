@@ -1,5 +1,5 @@
 from splash import splashScreen
-from gui import InputLine, Button
+from gui import InputBox, InputLine, Button
 import pygame
 import sys
 
@@ -51,7 +51,7 @@ def events(input_boxes):
                 pygame.display.toggle_fullscreen()
                 background()
             if event.key == pygame.K_F12:
-                input_boxes = inputBoxLoad()
+                input_boxes = inputBoxLoad()           
     return input_boxes
 def background():
     #Wiping after logo
@@ -92,6 +92,7 @@ def inputBoxLoad():
     return inputBoxes
 def onStart():
     print('Start pressed')
+    screen.fill("black")
 def game():
     running = True
     splashScreen()
