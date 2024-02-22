@@ -1,8 +1,6 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
-
 from database import Database
-
 import pygame
 import sys
 
@@ -97,12 +95,6 @@ def inputBoxLoad():
         inputBoxes.append(temp)
     return inputBoxes
 
-def addPlayer():
-    print('Add Player pressed')
-
-def onStart():
-    print('Start pressed')
-
 def game():
     running = True
     splashScreen()
@@ -113,10 +105,15 @@ def game():
     input_boxes = inputBoxLoad()
     # Player ID input
     idField = InputBox(X/2-100, Y/2+150, 200, 32)
-    # Add Player button
 
+    def addPlayer():
+        print('Add Player pressed')
+        print(idField.getText())
+    # Add Player button
     addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', addPlayer)
 
+    def onStart():
+        print('Start pressed')
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, 'Start', onStart)
 
