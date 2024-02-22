@@ -112,8 +112,10 @@ def game():
     idField = InputBox(X/2-100, Y/2+150, 200, 32)
 
     def addPlayer():
-        print('Add Player pressed')
-        print(idField.getText())
+        if db.check_id(idField.text):
+            print('ID already exists')
+        else:
+            print('ID does not exist')
     # Add Player button
     addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', addPlayer)
 
