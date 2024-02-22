@@ -33,25 +33,26 @@ def textBox(input, bg, textColor, x, y):
     return screen.blit(text, textRect)
 
 #Event function
-def events(input_boxes):
+def events(input_boxes, idCheck):
     # Check for events
     for event in pygame.event.get():
         for i, box in enumerate(input_boxes):
             box.handle_event(event)
-        # if user types QUIT then the screen will close 
+        idCheck.handle_event(event)
+        # if user types QUIT then the screen will close
         if event.type == pygame.QUIT:
-            pygame.quit() 
-            sys.exit() 
+            pygame.quit()
+            sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                pygame.quit() 
-                sys.exit() 
+                pygame.quit()
+                sys.exit()
             if event.key == pygame.K_F11:
                 # Toggle fullscreen mode
                 pygame.display.toggle_fullscreen()
                 background()
             if event.key == pygame.K_F12:
-                input_boxes = inputBoxLoad()           
+                input_boxes = inputBoxLoad()
     return input_boxes
 def background():
     #Wiping after logo
@@ -61,11 +62,11 @@ def background():
     redX = X/2 - 100 - 400 - 100  # middle of screen, 100 left of box, 400 for width of boxes, 100 right of boxes
     redY = 75
     redW = 100+400+100            #100 left of box, 400 for width of boxes, 100 right of boxes
-    redH = 650
+    redH = 720
     greenX = X/2
     greenY = 75
     greenW = 100 + 400 + 100
-    greenH = 650
+    greenH = 720
     # Setup player selection environment
     pygame.draw.rect(screen, red, pygame.Rect(redX, redY, redW, redH))
     pygame.draw.rect(screen, green, pygame.Rect(greenX, greenY, greenW, greenH))
@@ -73,7 +74,7 @@ def background():
     textBox("ID", green, "white", greenX+100+100, greenY+30)
     textBox("Name", red, "white", redX+redW-100-100, redY+30)
     textBox("Name", green, "white", greenX+greenW-100-100, greenY+30)
-    
+
 def inputBoxLoad():
     inputBoxes = []
     numberBoxes = 15
@@ -90,9 +91,14 @@ def inputBoxLoad():
         temp = InputLine(greenBoxX, i, boxWidth, boxHeight) # X, Y, W, H
         inputBoxes.append(temp)
     return inputBoxes
+
+def addPlayer():
+    print('Add Player pressed')
+    print('Id Field ' + idField.getText())
+
 def onStart():
     print('Start pressed')
-    screen.fill("black")
+
 def game():
     running = True
     splashScreen()
@@ -101,15 +107,24 @@ def game():
     Y = int(screen.get_height())
     background()
     input_boxes = inputBoxLoad()
-    startButton = Button(X/2-40, Y/2+200, 70, 32, 'Start', onStart)
+    # Player ID input
+    idField = InputBox(X/2-100, Y/2+150, 200, 32)
+    # Add Player button
+    addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', idField.getText())
+    # Start button
+    startButton = Button(X/2-35, Y/2+250, 70, 32, 'Start', onStart)
+
+    # Main loop
     while running:
         background()
         for box in input_boxes:
             box.draw(screen)
+        idField.draw(screen)
+        addPlayerButton.process(screen)
         startButton.process(screen)
         pygame.display.flip()
         clock.tick(60)  # limits FPS to 60
-        input_boxes = events(input_boxes)
+        input_boxes = events(input_boxes, idField)
 
 # Run Game
 game()

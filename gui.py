@@ -19,6 +19,8 @@ class InputBox:
         self.text = ''
     def getActive(self):
         return self.active
+    def getText(self):
+        return self.text
     def handle_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
