@@ -100,9 +100,6 @@ def inputBoxLoad():
 def addPlayer():
     print('Add Player pressed')
 
-    print('Id Field ' + idField.getText())
-
-
 def onStart():
     print('Start pressed')
 
