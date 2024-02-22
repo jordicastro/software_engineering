@@ -1,5 +1,6 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
+from database import Database
 import pygame
 import sys
 
