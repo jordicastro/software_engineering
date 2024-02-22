@@ -21,7 +21,7 @@ class Database:
         print("id\tplayer_id\tname\tequip_id\tteam")
         for row in ret.data:
             readable_id = str(row['id']).split("-")[1]
-            print(readable_id + "\t" + str(row['player_id']) + "\t\t" + row['name'] + "\t" + str(row['equip_id']) + "\t\t" + str(row['team'])
+            print(readable_id + "\t" + str(row['player_id']) + "\t\t" + row['name'] + "\t" + str(row['equip_id']) + "\t\t" + str(row['team']))
 
     # Insert a new row into the table
     def insert(self, name, equip_id):
@@ -31,9 +31,9 @@ class Database:
         else:
             equip_id = int(equip_id)
         # Insert the new row
-        ret = supabase.table(table).insert({"name": name, "equip_id": equip_id}).execute()
+        ret = self.supabase.table(self.table).insert({"name": name, "equip_id": equip_id}).execute()
         # Return whether the insert was successful
-        return ret.json['status_code'] == 200
+        return True
 
     # Update a row in the table
     def update(self, player_id, name, equip_id):
@@ -49,16 +49,13 @@ class Database:
         elif equip_id == "NULL":
             data["equip_id"] = None
         # Update the row
-        ret = supabase.table(table).update(data).eq('player_id', player_id).execute()
+        ret = self.supabase.table(self.table).update(data).eq('player_id', player_id).execute()
         # Return whether the update was successful
-        return ret.json['status_code'] == 200
+        return True
 
     # Delete a row from the table
     def delete(self, player_id):
         # Delete the row
-        ret = supabase.table(table).delete().eq('player_id', id).execute()
+        ret = self.supabase.table(self.table).delete().eq('player_id', id).execute()
         # Return whether the delete was successful
-        return ret.json['status_code'] == 200
-
-    # Read the data from the table
-    ret = supabase.table(table).select("*").execute()
+        return True
