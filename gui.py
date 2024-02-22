@@ -4,6 +4,7 @@ COLOR_INACTIVE = pg.Color('black')
 COLOR_ACTIVE = pg.Color('white')
 FONT = pg.font.Font(None, 32)
 
+# User input box
 class InputBox:
     def __init__(self, x, y, w, h, text=''):
         self.rect = pg.Rect(x, y, w, h)
@@ -11,7 +12,7 @@ class InputBox:
         self.text = text
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
-        
+
     def flip_active(self):
         self.active = not self.active
         self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
@@ -58,6 +59,8 @@ class InputBox:
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
         pg.draw.rect(screen, self.color, self.rect, 2)
+
+# User input line (two input boxes, one for ID and one for name)
 class InputLine:
     def __init__(self, x, y, w, h, text=''):
         self.id = InputBox(x, y, w, h)
@@ -77,6 +80,8 @@ class InputLine:
     def handle_event(self, event):
         self.id.handle_event(event)
         self.name.handle_event(event)
+
+# User input button
 class Button():
     def __init__(self, x, y, width, height, buttonText='Button', onclickFunction=None, onePress=False):
         self.x = x
