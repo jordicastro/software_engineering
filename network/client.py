@@ -30,16 +30,10 @@ class Client:
         self.socket.sendto(message, self.SEND_ADDR)
     
     def send_hit_id(self, player_id, hit_id):
-        message = {
-            'player_id' : player_id,
-            'hit_id' : hit_id,
-            }
-        print(f'message before json.dumps: {message}')
-        json_msg = json.dumps(message) # json to string
-        print(f'json msg: {json_msg}')
-        message = json_msg.encode(self.FORMAT)
-        print(f'encoded message {message}')
-        self.socket.sendto(message, self.SEND_ADDR)
+        message = str(player_id) + ":" + str(hit_id)
+        msg = message.encode(self.FORMAT)
+        print(f'encoded message {msg}')
+        self.socket.sendto(msg, self.SEND_ADDR)
 
     # def handle_server(self):
     #     # wait for server to return message
@@ -49,8 +43,9 @@ class Client:
     #     print(f'[CLIENT] message from server: {msg}')
     
     def receive_broadcast(self):
-        data, addr = self.broadcast_socket.recvfrom(1024)
-
+        print('in receiving method')
+        data, addr = self.socket.recvfrom(1024)
+        print(f'received data from broadcast socket : {data}')
         hit_id = data.decode(FORMAT)
         print(f'[CLIENT] Server Broadcast: player hit = {hit_id}')
         
@@ -59,10 +54,10 @@ class Client:
 player1 = Client()
 player1.send(' player1 establishing connection')
 # -----
-player1.send_id('0123456')
 
-print('handling server response')
-player1.handle_server()
+
+player1.send_hit_id(12, 14)
+player1.receive_broadcast()
 player1.socket.close()
 player1.broadcast_socket.close()
 # loop through players array and close sockets
