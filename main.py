@@ -1,10 +1,11 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
-
 from database import Database
-
 import pygame
 import sys
+
+# Database setup
+db = Database()
 
 # pygame setup
 pygame.init()
@@ -47,10 +48,12 @@ def events(input_boxes, idCheck):
         # if user types QUIT then the screen will close
         if event.type == pygame.QUIT:
             pygame.quit()
+            db.close()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
+                db.close()
                 sys.exit()
             if event.key == pygame.K_F11:
                 # Toggle fullscreen mode
@@ -97,15 +100,6 @@ def inputBoxLoad():
         inputBoxes.append(temp)
     return inputBoxes
 
-def addPlayer():
-    print('Add Player pressed')
-
-    print('Id Field ' + idField.getText())
-
-
-def onStart():
-    print('Start pressed')
-
 def game():
     running = True
     splashScreen()
@@ -116,10 +110,17 @@ def game():
     input_boxes = inputBoxLoad()
     # Player ID input
     idField = InputBox(X/2-100, Y/2+150, 200, 32)
-    # Add Player button
 
+    def addPlayer():
+        if db.check_id(idField.text):
+            print('ID already exists')
+        else:
+            print('ID does not exist')
+    # Add Player button
     addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', addPlayer)
 
+    def onStart():
+        print('Start pressed')
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, 'Start', onStart)
 
