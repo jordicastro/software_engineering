@@ -1,8 +1,7 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
 from database import Database
-import pygame
-import sys
+import pygame, sys, socket
 
 # Database setup
 db = Database()
@@ -20,6 +19,12 @@ Y = int(screen.get_height())
 # Initializing Color
 red = (128, 23, 23)
 green = (17, 122, 13)
+
+# Bind server tx socket
+SERVER_IP = '127.0.0.1'
+SERVER_PORT = 7500
+serverAddress = (SERVER_IP, SERVER_PORT)
+sockTX = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
 #title setup
 def title():
@@ -142,6 +147,8 @@ def game():
                 red_players.append({'id': idField.getText(), 'name': db.select(idField.getText())['name']})
             else:
                 green_players.append({'id': idField.getText(), 'name': db.select(idField.getText())['name']})
+            # Transmit equipment code via UDP
+            sockTX.sendto(equipmentField.getText().encode(), (SERVER_IP, SERVER_PORT))
             # Clear fields
             idField.clear()
             equipmentField.clear()
@@ -157,11 +164,14 @@ def game():
                     red_players.append({'id': idField.getText(), 'name': nameField.getText()})
                 else:
                     green_players.append({'id': idField.getText(), 'name': nameField.getText()})
+                # Transmit equipment code via UDP
+                sockTX.sendto(equipmentField.getText().encode(), (SERVER_IP, SERVER_PORT))
                 # Clear fields
                 addPlayerButton.setText('Add Player')
                 idField.clear()
                 equipmentField.clear()
                 nameField.clear()
+
 
     addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, addPlayer, 'Add Player')
 
