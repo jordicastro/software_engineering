@@ -2,6 +2,7 @@ from splash import splashScreen
 from gui import InputBox, InputLine, Button
 from database import Database
 import pygame, sys, socket
+from actionScreen import runGame
 
 # Database setup
 db = Database()
@@ -177,6 +178,9 @@ def game():
 
     def onStart():
         print('Start pressed')
+
+        #COUNTDOWN FUNCTION FIRST THEN RUN GAME
+        runGame()
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, onStart, 'Start')
 
