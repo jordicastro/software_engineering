@@ -1,4 +1,5 @@
 from splash import splashScreen
+from countdown import countdown
 from gui import *
 import pygame, sys, socket
 
@@ -186,6 +187,7 @@ class Game:
 
         # Start game
         def onStart():
+            countdown()
             print("Starting game")
 
         # Create buttons
