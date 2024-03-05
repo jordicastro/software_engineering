@@ -21,37 +21,16 @@ for row in ret.data:
     readable_id = str(row['id']).split("-")[1]
     print(readable_id + "\t" + str(row['player_id']) + "\t\t" + row['name'] + "\t" + str(row['equip_id']) + "\t\t" + str(row['team']))
 
-# Create loop to perform operations
-choice = ''
-while choice.upper() != 'Q':
-    # Ask what the user wants to do
-    choice = input("\nSelect Operation: (C)hange_Table, (I)nsert, (U)pdate, (D)elete, (Q)uit\n")
-    while choice.upper() not in ['C', 'I', 'U', 'D', 'Q']:
-        choice = input("Invalid choice. Select Operation: (C)hange_Table, (I)nsert, (U)pdate, (D)elete, (Q)uit\n")
+    # Insert a new row into the table
+    def insert(self, player_id, name):
+        # Insert the new row
+        ret = self.supabase.table(self.table).insert({"player_id": int(player_id), "name": name}).execute()
+        # Return whether the insert was successful
+        return True
 
-    # Perform the selected operation
-    # Change table
-    if choice.upper() == 'C':
-        table = input("Enter the table name: ")
-        # Check if the table exists in the database
-        #ret = supabase.table(table).select("*").execute()
-        #if ret.json['status_code'] == 404:
-            #print("Table changed to " + table)
-        #else:
-            #print("Table does not exist")
-    elif choice.upper() == 'I':
-        name = input("Enter the name of the player to insert: ")
-        equip_id = input("Enter the equipment id of the player: ")
-        if equip_id == "":
-            equip_id = None
-        else:
-            equip_id = int(equip_id)
-        ret = supabase.table(table).insert({"name": name, "equip_id": equip_id}).execute()
-        print("Insert successful")
-    elif choice.upper() == 'U':
-        player_id = int(input("Enter the id of the player to update: "))
-        name = input("Enter the new name of the player (Leave blank for no change): ")
-        equip_id = input("Enter the new equipment id of the player (Leave blank for no change): ")
+    # Update a row in the table
+    def update(self, player_id, name, equip_id):
+        # Create a dictionary to store the data to update
         data = {}
         if name != "":
             data["name"] = name

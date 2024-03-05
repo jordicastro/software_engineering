@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
 <<<<<<< HEAD
+=======
+from game import Game
+>>>>>>> 3633135d4326b8825281cfd3db9841913479b782
 from database import Database
-from countdown import countdown
-import pygame, sys, socket
+import sys
 
-# Database setup
+# Create database object
 db = Database()
+<<<<<<< HEAD
 =======
 import pygame
 import sys
@@ -276,3 +280,12 @@ def game():
 
 # Run Game
 game()
+=======
+# Create server object
+server = None
+# Create game object
+game = Game(db, server)
+
+# Run game
+game.run()
+>>>>>>> 3633135d4326b8825281cfd3db9841913479b782
