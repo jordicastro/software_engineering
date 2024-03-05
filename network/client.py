@@ -84,6 +84,7 @@ class Client:
 print('[START] client is starting...')   
 player1 = Client()
 player1.send('player1 establishing connection')
+player1.receive_broadcast()
 # -----
 player1.send_hit_id(12, 14)
 player1.receive_broadcast()

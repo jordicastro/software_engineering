@@ -22,6 +22,24 @@ class Server:
         print('[START] server is starting...')
         self.start()
 
+    def start(self):
+        print(f'[LISTENING] server is listening on {self.server_recv}')
+
+        while True: #continuous listening
+            # initial connection from client
+            print(f'[WAITING FOR CONNECTION] server is waiting for connection...')
+            data, addr = self.server_recv.recvfrom(1024)
+            print(f'[CONNECTION] connection from {addr} received.')
+            # decode data
+            equip_id = data.decode(FORMAT)
+            print(f'\t[BROADCASTING] player_id {equip_id} received. broadcasting to clients...')
+            self.server_broadcast.sendto(str(equip_id).encode(FORMAT), BROADCAST_ADDR) 
+            
+            # send info to handle_client using threads
+            thread = threading.Thread(target=self.handle_client, args=(data, addr))
+            thread.start()
+            print(f'[ACTIVE CONECTIONS] {threading.active_count() -1}')
+
     def handle_client(self, conn, addr): # receive dictionary (int : int) on port 7501, send back broadcast (int) on port 7500
         print(f'[NEW CONNECTION] {addr} connected.')        
         connected = True
@@ -40,19 +58,9 @@ class Server:
             
             print(f'\t[BROADCASTING] hit_id {hit_id}, transmit_id {transmit_id} received. broadcasting to clients...')
             self.server_broadcast.sendto(str(hit_id).encode(FORMAT), BROADCAST_ADDR) 
+    
+    def add_player(self, player_id: int) -> None:
+        self.server_broadcast.sendto(str(player_id).encode(FORMAT), BROADCAST_ADDR)
 
-    def start(self):
-        print(f'[LISTENING] server is listening on {self.server_recv}')
-
-        while True: #continuous listening
-            # initial connection from client
-            data, addr = self.server_recv.recvfrom(1024)
-            # decode data
-            equip_id = data.decode(FORMAT)
-            print(f'\t[BROADCASTING] player_id {equip_id} received. broadcasting to clients...')
-            self.server_broadcast.sendto(str(equip_id).encode(FORMAT), BROADCAST_ADDR) 
-            
-            # send info to handle_client using threads
-            thread = threading.Thread(target=self.handle_client, args=(data, addr))
-            thread.start()
-            print(f'[ACTIVE CONECTIONS] {threading.active_count() -1}')
+# run server
+server = Server()
