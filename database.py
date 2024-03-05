@@ -27,14 +27,9 @@ class Database:
             print(readable_id + "\t" + str(row['player_id']) + "\t\t" + row['name'] + "\t" + str(row['equip_id']) + "\t\t" + str(row['team']))
 
     # Insert a new row into the table
-    def insert(self, player_id, name, equip_id):
-        # If the equip_id is empty, set it to None (NULL)
-        if equip_id == "" or equip_id == "NULL":
-            equip_id = None
-        else:
-            equip_id = int(equip_id)
+    def insert(self, player_id, name):
         # Insert the new row
-        ret = self.supabase.table(self.table).insert({"player_id": int(player_id), "name": name, "equip_id": equip_id}).execute()
+        ret = self.supabase.table(self.table).insert({"player_id": int(player_id), "name": name}).execute()
         # Return whether the insert was successful
         return True
 
