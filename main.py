@@ -180,7 +180,7 @@ def game():
         print('Start pressed')
 
         #COUNTDOWN FUNCTION FIRST THEN RUN GAME
-        runGame()
+        runGame() # testing to update my branch
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, onStart, 'Start')
 
