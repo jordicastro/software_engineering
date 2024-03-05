@@ -1,11 +1,16 @@
 from splash import splashScreen
 from gui import InputBox, InputLine, Button
+<<<<<<< HEAD
 from database import Database
 from countdown import countdown
 import pygame, sys, socket
 
 # Database setup
 db = Database()
+=======
+import pygame
+import sys
+>>>>>>> main
 
 # pygame setup
 pygame.init()
@@ -21,12 +26,15 @@ Y = int(screen.get_height())
 red = (128, 23, 23)
 green = (17, 122, 13)
 
+<<<<<<< HEAD
 # Bind server tx socket
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 7500
 serverAddress = (SERVER_IP, SERVER_PORT)
 sockTX = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
+=======
+>>>>>>> main
 #title setup
 def title():
     font = pygame.font.Font('freesansbold.ttf', 32)
@@ -43,11 +51,16 @@ def textBox(input, bg, textColor, x, y):
     return screen.blit(text, textRect)
 
 #Event function
+<<<<<<< HEAD
 def events(input_boxes, idCheck, equipCheck, nameCheck):
+=======
+def events(input_boxes, idCheck):
+>>>>>>> main
     # Check for events
     for event in pygame.event.get():
         for i, box in enumerate(input_boxes):
             box.handle_event(event)
+<<<<<<< HEAD
 
         idCheck.handle_event(event)
         equipCheck.handle_event(event)
@@ -57,21 +70,35 @@ def events(input_boxes, idCheck, equipCheck, nameCheck):
         if event.type == pygame.QUIT:
             pygame.quit()
             db.close()
+=======
+        idCheck.handle_event(event)
+        # if user types QUIT then the screen will close
+        if event.type == pygame.QUIT:
+            pygame.quit()
+>>>>>>> main
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
+<<<<<<< HEAD
                 db.close()
+=======
+>>>>>>> main
                 sys.exit()
             if event.key == pygame.K_F11:
                 # Toggle fullscreen mode
                 pygame.display.toggle_fullscreen()
                 background()
             if event.key == pygame.K_F12:
+<<<<<<< HEAD
                 for box in input_boxes:
                     box.clear()
                 idCheck.clear()
 
+=======
+                input_boxes = inputBoxLoad()
+    return input_boxes
+>>>>>>> main
 def background():
     #Wiping after logo
     pygame.display.set_caption('Player Selection')
@@ -93,7 +120,11 @@ def background():
     textBox("Name", red, "white", redX+redW-100-100, redY+30)
     textBox("Name", green, "white", greenX+greenW-100-100, greenY+30)
 
+<<<<<<< HEAD
 def inputBoxLoad(team):
+=======
+def inputBoxLoad():
+>>>>>>> main
     inputBoxes = []
     numberBoxes = 15
     startY = 140
@@ -102,6 +133,7 @@ def inputBoxLoad(team):
     endHeight = numberBoxes * boxHeight + startY
     redBoxX = X/2-100-400
     greenBoxX = X/2+100
+<<<<<<< HEAD
     if not team:
         for i in range(startY,endHeight,boxHeight): # range(starting y, ending y, increment y)
             temp = InputLine(redBoxX, i, boxWidth, boxHeight) # X, Y, W, H
@@ -123,11 +155,31 @@ def inputBoxUpdate(red_boxes, green_boxes, red_players, green_players):
 def game():
     running = True
 
+=======
+    for i in range(startY,endHeight,boxHeight): # range(starting y, ending y, increment y)
+        temp = InputLine(redBoxX, i, boxWidth, boxHeight) # X, Y, W, H
+        inputBoxes.append(temp)
+    for i in range(startY,endHeight,boxHeight): # range(starting y, ending y, increment y)
+        temp = InputLine(greenBoxX, i, boxWidth, boxHeight) # X, Y, W, H
+        inputBoxes.append(temp)
+    return inputBoxes
+
+def addPlayer():
+    print('Add Player pressed')
+    print('Id Field ' + idField.getText())
+
+def onStart():
+    print('Start pressed')
+
+def game():
+    running = True
+>>>>>>> main
     splashScreen()
     screen = pygame.display.set_mode((desktop.current_w, desktop.current_h))
     X = int(screen.get_width())
     Y = int(screen.get_height())
     background()
+<<<<<<< HEAD
     red_boxes = inputBoxLoad(False)
     green_boxes = inputBoxLoad(True)
     # Player ID input
@@ -181,10 +233,20 @@ def game():
         countdown()
     # Start button
     startButton = Button(X/2-35, Y/2+250, 70, 32, onStart, 'Start')
+=======
+    input_boxes = inputBoxLoad()
+    # Player ID input
+    idField = InputBox(X/2-100, Y/2+150, 200, 32)
+    # Add Player button
+    addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, 'Add Player', idField.getText())
+    # Start button
+    startButton = Button(X/2-35, Y/2+250, 70, 32, 'Start', onStart)
+>>>>>>> main
 
     # Main loop
     while running:
         background()
+<<<<<<< HEAD
         inputBoxUpdate(red_boxes, green_boxes, red_players, green_players)
         for box in red_boxes + green_boxes:
             box.draw(screen)
@@ -201,6 +263,16 @@ def game():
 
     # Quit once loop is broken
     pygame.quit()
+=======
+        for box in input_boxes:
+            box.draw(screen)
+        idField.draw(screen)
+        addPlayerButton.process(screen)
+        startButton.process(screen)
+        pygame.display.flip()
+        clock.tick(60)  # limits FPS to 60
+        input_boxes = events(input_boxes, idField)
+>>>>>>> main
 
 # Run Game
 game()
