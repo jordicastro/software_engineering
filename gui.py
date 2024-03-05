@@ -77,11 +77,11 @@ class InputLine:
     def getName(self):
         return self.name.text
     def setID(self, text):
-        self.id.text = text
+        self.id.text = str(text)
     def setName(self, text):
         self.name.text = text
     def setPlayer(self, player_data):
-        self.id.text = player_data['id']
+        self.id.text = str(player_data['player_id'])
         self.name.text = player_data['name']
     def clear(self):
         self.id.clear()
