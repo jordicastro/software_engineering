@@ -190,7 +190,10 @@ class Game:
         def onStart():
             countdown()
             print("Starting game")
-            runGame(self)
+            print(self.red_players)
+            print(self.green_players)
+            #runGame()
+            runGame(self.red_players,self.green_players)
 
         # Create buttons
         addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')
