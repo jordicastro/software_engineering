@@ -53,6 +53,8 @@ class Game:
                 if event.key == pygame.K_F12:
                     self.red_players = []
                     self.green_players = []
+                if event.key == pygame.K_F5:
+                    self.onStartHelper()
 
     # Render elements
     def render(self):
@@ -147,7 +149,13 @@ class Game:
         else:
             print("Error creating player")
         return ret
-
+    def onStartHelper(self):
+        countdown()
+        print("Starting game")
+        print(self.red_players)
+        print(self.green_players)
+        #runGame()
+        runGame(self.red_players,self.green_players)
     # Run main game
     def run(self):
         self.running = True
@@ -188,12 +196,7 @@ class Game:
 
         # Start game
         def onStart():
-            countdown()
-            print("Starting game")
-            print(self.red_players)
-            print(self.green_players)
-            #runGame()
-            runGame(self.red_players,self.green_players)
+            self.onStartHelper()
 
         # Create buttons
         addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')

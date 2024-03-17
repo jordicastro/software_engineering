@@ -21,6 +21,13 @@ def events():
                 # Quit the game
                 pygame.quit()
                 sys.exit()
+# Render text box
+def textBox(screen, input, color, x, y, bg):
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    text = font.render(input, True, (color), (bg))
+    textRect = text.get_rect()
+    textRect.center = (x, y)
+    return screen.blit(text, textRect)
 
 
 # def render():
@@ -70,7 +77,7 @@ def runGame(redTeam,greenTeam):
     top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
 
     # Create text boxes for code names and game scores
-
+    
     # Divide each rectangle into a 15 row by 2 column grid
     row_height = top_left_rect.height // 15
     column_width = top_left_rect.width // 2
@@ -79,6 +86,7 @@ def runGame(redTeam,greenTeam):
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
+    
     # Create text box for game events
 
     while running:
@@ -105,6 +113,17 @@ def runGame(redTeam,greenTeam):
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
+        yStart = 50
+        for x in redTeam:
+            name = x.get('name')
+            textBox(screen, name, "white", 100, yStart, red)
+            yStart += 30
+        yStart = 50
+        for x in greenTeam:
+            name = x.get('name')
+            textBox(screen, name, "white", X//2+100, yStart, green)
+            yStart += 30
+
         #render(game)
 
         
