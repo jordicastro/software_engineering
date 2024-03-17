@@ -2,6 +2,7 @@ from splash import splashScreen
 from countdown import countdown
 from gui import *
 import pygame, sys, socket
+from actionScreen import runGame
 
 # Game class
 class Game:
@@ -189,6 +190,7 @@ class Game:
         def onStart():
             countdown()
             print("Starting game")
+            runGame(self)
 
         # Create buttons
         addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')

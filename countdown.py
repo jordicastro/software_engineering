@@ -50,7 +50,7 @@ def countdown():
     
     i = len(images) - 1 #starting index
     start_time = time.time()
-    while time.time() - start_time < 30:
+    while time.time() - start_time < 1:
         events()
         timerNum = images[i]
         timerNumWidth = background.get_width()/2-images[i].get_width()/2
