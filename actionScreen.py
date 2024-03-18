@@ -61,7 +61,7 @@ def runGame(redTeam,greenTeam):
     running = True
     pygame.init()
     desktop = pygame.display.Info()
-    screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((1920,1080))
     clock = pygame.time.Clock()
 
     #Screen coordinates

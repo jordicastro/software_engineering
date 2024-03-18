@@ -174,11 +174,11 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        idField = InputBox(X/2-100, Y/2+150, 200, 32, True)
+        idField = InputBox(X/2-100, Y/2+100, 200, 32, True)
         self.input_boxes.append(idField)
-        equipmentField = InputBox(X/2-100, Y/2+100, 200, 32, True)
+        equipmentField = InputBox(X/2-100, Y/2+50, 200, 32, True)
         self.input_boxes.append(equipmentField)
-        nameField = InputBox(X/2-100, Y/2+50, 200, 32, True)
+        nameField = InputBox(X/2-100, Y/2, 200, 32, True)
         self.input_boxes.append(nameField)
 
         # Check if player exists in database and decide whether to add or create player
