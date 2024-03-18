@@ -1,8 +1,9 @@
+from server import Server
 from splash import splashScreen
 from countdown import countdown
 from gui import *
-import pygame, sys, socket
 from actionScreen import runGame
+import pygame, sys
 
 # Game class
 class Game:
@@ -37,6 +38,7 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 self.db.close()
+                self.server.stop()
                 sys.exit()
             # Check for key presses
             elif event.type == pygame.KEYDOWN:
@@ -136,6 +138,7 @@ class Game:
     # Add player to game
     def addPlayer(self, player_id, equip_id):
         ret = self.db.select(player_id)
+        self.server.send_id(equip_id)
         if equip_id % 2 != 0:
             self.red_players.append(ret)
         else:
@@ -163,7 +166,7 @@ class Game:
         # Splash screen
         splashScreen()
 
-        # Reinitalize screen size
+        # Reinitialize screen size
         self.screen = pygame.display.set_mode((self.desktop.current_w, self.desktop.current_h))
         X = int(self.screen.get_width())
         Y = int(self.screen.get_height())
@@ -215,4 +218,5 @@ class Game:
         # Quit game
         pygame.quit()
         self.db.close()
+        self.server.stop()
         sys.exit()
