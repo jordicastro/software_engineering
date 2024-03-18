@@ -2,6 +2,7 @@ from splash import splashScreen
 from countdown import countdown
 from gui import *
 import pygame, sys, socket
+from actionScreen import runGame
 
 # Game class
 class Game:
@@ -52,6 +53,8 @@ class Game:
                 if event.key == pygame.K_F12:
                     self.red_players = []
                     self.green_players = []
+                if event.key == pygame.K_F5:
+                    self.onStartHelper()
 
     # Render elements
     def render(self):
@@ -146,7 +149,13 @@ class Game:
         else:
             print("Error creating player")
         return ret
-
+    def onStartHelper(self):
+        countdown()
+        print("Starting game")
+        print(self.red_players)
+        print(self.green_players)
+        #runGame()
+        runGame(self.red_players,self.green_players)
     # Run main game
     def run(self):
         self.running = True
@@ -165,11 +174,11 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        idField = InputBox(X/2-100, Y/2+150, 200, 32, True)
+        idField = InputBox(X/2-100, Y/2+100, 200, 32, True)
         self.input_boxes.append(idField)
-        equipmentField = InputBox(X/2-100, Y/2+100, 200, 32, True)
+        equipmentField = InputBox(X/2-100, Y/2+50, 200, 32, True)
         self.input_boxes.append(equipmentField)
-        nameField = InputBox(X/2-100, Y/2+50, 200, 32, True)
+        nameField = InputBox(X/2-100, Y/2, 200, 32, True)
         self.input_boxes.append(nameField)
 
         # Check if player exists in database and decide whether to add or create player
@@ -187,8 +196,7 @@ class Game:
 
         # Start game
         def onStart():
-            countdown()
-            print("Starting game")
+            self.onStartHelper()
 
         # Create buttons
         addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')
