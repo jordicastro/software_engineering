@@ -42,13 +42,6 @@ class Client:
             message = f'{equip_id}:{hit_id}'.encode(self.FORMAT)
         print(f'\t[SENDING IDs] Sending message {message} to Server')
         self.socket.sendto(message, self.SEND_ADDR)
-
-    # def handle_server(self):
-    #     # wait for server to return message
-    #     data, addr = self.socket.recvfrom(1024)
-    #     # decode msg
-    #     msg = data.decode(FORMAT)
-    #     print(f'[CLIENT] message from server: {msg}')
     
     def receive_broadcast(self): # TODO: while True: for continuous broadcast listening (async?)
         print('in receiving method')
@@ -84,6 +77,7 @@ class Client:
 print('[START] client is starting...')   
 player1 = Client()
 player1.send('player1 establishing connection')
+player1.receive_broadcast()
 # -----
 player1.send_hit_id(12, 14)
 player1.receive_broadcast()
