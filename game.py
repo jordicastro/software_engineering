@@ -1,7 +1,9 @@
+from server import Server
 from splash import splashScreen
 from countdown import countdown
 from gui import *
-import pygame, sys, socket
+from actionScreen import runGame
+import pygame, sys
 
 # Game class
 class Game:
@@ -36,15 +38,13 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 self.db.close()
+                self.server.stop()
                 sys.exit()
             # Check for key presses
             elif event.type == pygame.KEYDOWN:
                 # Escape key closes the program
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-                    pygame.quit()
-                    self.db.close()
-                    sys.exit()
                 # F11 key toggles fullscreen
                 if event.key == pygame.K_F11:
                     if self.screen.get_flags() & pygame.FULLSCREEN:
@@ -55,6 +55,8 @@ class Game:
                 if event.key == pygame.K_F12:
                     self.red_players = []
                     self.green_players = []
+                if event.key == pygame.K_F5:
+                    self.onStartHelper()
 
     # Render elements
     def render(self):
@@ -93,17 +95,6 @@ class Game:
         textRect.center = (x, y)
         return self.screen.blit(text, textRect)
 
-    #calculate percentage values for screen
-    def getDisplayPercent(self, percent):
-        xOnePercent = int(self.X / 100)
-        yOnePercent = int(self.Y / 100)
-        xActualPercent = int(percent * xOnePercent)
-        yActualPercent = int(percent * yOnePercent)
-        point = dict()
-        point['X'] = xActualPercent
-        point['Y'] = yActualPercent
-        return point
-    
     # Render background
     def background(self):
         # Initializing Color
@@ -113,50 +104,32 @@ class Game:
         pygame.display.set_caption('Player Selection')
         self.screen.fill("black")
         self.title()
-        
-        halfX = self.getDisplayPercent(50).get('X')
-        widthValue = self.getDisplayPercent(32).get('X')
-        yValue = self.getDisplayPercent(7).get('Y')
-        heightValue = self.getDisplayPercent(70).get('Y')
-        
-        redX = halfX - widthValue # middle of screen, 100 left of box, 400 for width of boxes, 100 right of boxes
-        redY = yValue
-        redW = widthValue          #100 left of box, 400 for width of boxes, 100 right of boxes
-        redH = heightValue
-        
-        greenX = halfX
-        greenY = yValue
-        greenW = widthValue
-        greenH = heightValue
-        
-        textX = self.getDisplayPercent(10).get('X')
-        textY = self.getDisplayPercent(3).get('Y')
-        
+        redX = self.X/2 - 100 - 400 - 100  # middle of screen, 100 left of box, 400 for width of boxes, 100 right of boxes
+        redY = 75
+        redW = 100+400+100            #100 left of box, 400 for width of boxes, 100 right of boxes
+        redH = 720
+        greenX = self.X/2
+        greenY = 75
+        greenW = 100 + 400 + 100
+        greenH = 720
         # Setup player selection environment
         pygame.draw.rect(self.screen, RED, pygame.Rect(redX, redY, redW, redH))
         pygame.draw.rect(self.screen, GREEN, pygame.Rect(greenX, greenY, greenW, greenH))
-        self.textBox("ID", "white", redX+textX, redY+textY, RED)
-        self.textBox("ID", "white", greenX+textX, greenY+textY, GREEN)
-        self.textBox("Name", "white", redX+redW-textX, redY+textY, RED)
-        self.textBox("Name", "white", greenX+greenW-textX, greenY+textY, GREEN)
+        self.textBox("ID", "white", redX+100+100, redY+30, RED)
+        self.textBox("ID", "white", greenX+100+100, greenY+30, GREEN)
+        self.textBox("Name", "white", redX+redW-100-100, redY+30, RED)
+        self.textBox("Name", "white", greenX+greenW-100-100, greenY+30, GREEN)
 
-    
-    
-    
     # Initialize player lines
     def initPlayerLines(self, num_boxes):
         # Set up variables
-        start = self.getDisplayPercent(7).get('X')
-        height = self.getDisplayPercent(3).get('Y')
+        start = 128
+        height = 32
         end = start + (height * num_boxes)
         # Create player lines for both teams
-        midScreenX = self.getDisplayPercent(50).get('X')
-        width = self.getDisplayPercent(11).get('X')
-        redXOffset = midScreenX - width*2 - self.getDisplayPercent(5).get('X')
-        greenXOffset = midScreenX + self.getDisplayPercent(5).get('X')
         for i in range(start, end, height):
-            self.red_lines.append(InputLine(redXOffset, i, width, height))
-            self.green_lines.append(InputLine(greenXOffset, i, width, height))
+            self.red_lines.append(InputLine(self.X/2-100-400, i, 200, height))
+            self.green_lines.append(InputLine(self.X/2+100, i, 200, height))
 
     # Encode player data to json
     def encodePlayer(self, player_id, name, equip_id):
@@ -165,6 +138,7 @@ class Game:
     # Add player to game
     def addPlayer(self, player_id, equip_id):
         ret = self.db.select(player_id)
+        self.server.send_id(equip_id)
         if equip_id % 2 != 0:
             self.red_players.append(ret)
         else:
@@ -178,7 +152,13 @@ class Game:
         else:
             print("Error creating player")
         return ret
-
+    def onStartHelper(self):
+        countdown()
+        print("Starting game")
+        print(self.red_players)
+        print(self.green_players)
+        #runGame()
+        runGame(self.red_players,self.green_players)
     # Run main game
     def run(self):
         self.running = True
@@ -186,7 +166,7 @@ class Game:
         # Splash screen
         splashScreen()
 
-        # Reinitalize screen size
+        # Reinitialize screen size
         self.screen = pygame.display.set_mode((self.desktop.current_w, self.desktop.current_h))
         X = int(self.screen.get_width())
         Y = int(self.screen.get_height())
@@ -197,12 +177,11 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        
-        idField = InputBox(X/2-110, Y/2+150, 200, 32, True)
+        idField = InputBox(X/2-100, Y/2+100, 200, 32, True)
         self.input_boxes.append(idField)
-        equipmentField = InputBox(X/2-110, Y/2+100, 200, 32, True)
+        equipmentField = InputBox(X/2-100, Y/2+50, 200, 32, True)
         self.input_boxes.append(equipmentField)
-        nameField = InputBox(X/2-110, Y/2+50, 200, 32, True)
+        nameField = InputBox(X/2-100, Y/2, 200, 32, True)
         self.input_boxes.append(nameField)
 
         # Check if player exists in database and decide whether to add or create player
@@ -220,8 +199,7 @@ class Game:
 
         # Start game
         def onStart():
-            countdown()
-            print("Starting game")
+            self.onStartHelper()
 
         # Create buttons
         addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')
@@ -240,4 +218,5 @@ class Game:
         # Quit game
         pygame.quit()
         self.db.close()
+        self.server.stop()
         sys.exit()
