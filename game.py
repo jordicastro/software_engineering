@@ -107,11 +107,11 @@ class Game:
         redX = self.X/2 - 100 - 400 - 100  # middle of screen, 100 left of box, 400 for width of boxes, 100 right of boxes
         redY = 75
         redW = 100+400+100            #100 left of box, 400 for width of boxes, 100 right of boxes
-        redH = 900
+        redH = 800
         greenX = self.X/2
         greenY = 75
         greenW = 100 + 400 + 100
-        greenH = 900
+        greenH = 800
         # Setup player selection environment
         pygame.draw.rect(self.screen, RED, pygame.Rect(redX, redY, redW, redH))
         pygame.draw.rect(self.screen, GREEN, pygame.Rect(greenX, greenY, greenW, greenH))
