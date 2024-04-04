@@ -48,7 +48,3 @@ def splashScreen():
     start_time = time.time()
     while time.time() - start_time < 5:
         events()
-
-
-
-
