@@ -1,6 +1,6 @@
-# Player Object Class
-class Player():
-    def __int__(self, player_id, name, equip_id, score):
+# Player Data Class
+class Player:
+    def __init__(self, player_id: int, name: str, equip_id: int, score: int):
         self.player_id = player_id
         self.name = name
         self.equip_id = equip_id
