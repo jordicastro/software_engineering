@@ -88,8 +88,8 @@ class Game:
         return self.screen.blit(title, textRect)
 
     # Render text box
-    def textBox(self, input, color, x, y, bg):
-        font = pygame.font.Font('freesansbold.ttf', 32)
+    def textBox(self, input, fontSize: int, color, x, y, bg):
+        font = pygame.font.Font('freesansbold.ttf', fontSize)
         text = font.render(input, True, (color), (bg))
         textRect = text.get_rect()
         textRect.center = (x, y)
@@ -107,18 +107,22 @@ class Game:
         redX = self.X/2 - 100 - 400 - 100  # middle of screen, 100 left of box, 400 for width of boxes, 100 right of boxes
         redY = 75
         redW = 100+400+100            #100 left of box, 400 for width of boxes, 100 right of boxes
-        redH = 720
+        redH = 800
         greenX = self.X/2
         greenY = 75
         greenW = 100 + 400 + 100
-        greenH = 720
+        greenH = 800
         # Setup player selection environment
         pygame.draw.rect(self.screen, RED, pygame.Rect(redX, redY, redW, redH))
         pygame.draw.rect(self.screen, GREEN, pygame.Rect(greenX, greenY, greenW, greenH))
-        self.textBox("ID", "white", redX+100+100, redY+30, RED)
-        self.textBox("ID", "white", greenX+100+100, greenY+30, GREEN)
-        self.textBox("Name", "white", redX+redW-100-100, redY+30, RED)
-        self.textBox("Name", "white", greenX+greenW-100-100, greenY+30, GREEN)
+        self.textBox("ID", 32, "white", redX+100+100, redY+30, RED)
+        self.textBox("ID", 32, "white", greenX+100+100, greenY+30, GREEN)
+        self.textBox("Name", 32, "white", redX+redW-100-100, redY+30, RED)
+        self.textBox("Name", 32, "white", greenX+greenW-100-100, greenY+30, GREEN)
+        # Labels for inputs
+        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2+100+40+75, (128,23,23))
+        self.textBox("Equipment ID:", 20, "white", self.X/2-100-100, self.Y/2+50+40+75, (128,23,23))
+        self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
 
     # Initialize player lines
     def initPlayerLines(self, num_boxes):
@@ -177,11 +181,11 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        idField = InputBox(X/2-100, Y/2+100, 200, 32, True)
+        idField = InputBox(X/2-105, Y/2+100+75, 200, 32, True)
         self.input_boxes.append(idField)
-        equipmentField = InputBox(X/2-100, Y/2+50, 200, 32, True)
+        equipmentField = InputBox(X/2-105, Y/2+50+75, 200, 32, True)
         self.input_boxes.append(equipmentField)
-        nameField = InputBox(X/2-100, Y/2, 200, 32, True)
+        nameField = InputBox(X/2-105, Y/2+75, 200, 32, True)
         self.input_boxes.append(nameField)
 
         # Check if player exists in database and decide whether to add or create player
@@ -202,9 +206,9 @@ class Game:
             self.onStartHelper()
 
         # Create buttons
-        addPlayerButton = Button(X/2-64, Y/2+200, 128, 32, checkPlayer, 'Add Player')
+        addPlayerButton = Button(X/2-64, Y/2+200+10, 128, 32, checkPlayer, 'Add Player')
         self.buttons.append(addPlayerButton)
-        startGameButton = Button(X/2-35, Y/2+250, 70, 32, onStart, 'Start')
+        startGameButton = Button(X/2-35, Y/2+250+10, 70, 32, onStart, 'Start')
         self.buttons.append(startGameButton)
 
         # Main game loop
