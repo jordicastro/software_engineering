@@ -26,37 +26,39 @@ def textBox(screen, input, color, x, y, bg):
     font = pygame.font.Font('freesansbold.ttf', 32)
     text = font.render(input, True, (color), (bg))
     textRect = text.get_rect()
-    textRect.center = (x, y)
+    textRect.bottomleft = (x, y)
     return screen.blit(text, textRect)
 
+def displayScore(screen, redTeam, greenTeam):
+    # Initializing Color
+    red = (128, 23, 23)
+    green = (17, 122, 13)
+    X = int(screen.get_width())
+    Y = int(screen.get_height())
+    
+    # Fill the screen with colors
+    
+    yStart = 50
+    redTotalPts = 0
+    greenTotalPts = 0
+    for x in redTeam:
+        name = x.get('name')
+        textBox(screen, name, "white", 150, yStart, red)
+        textBox(screen, str(0), "white", X/2 -100, yStart, red)
+        redTotalPts = redTotalPts + 0
+        yStart += 30
+    yStart = 50
+    for x in greenTeam:
+        name = x.get('name')
+        textBox(screen, name, "white", X//2+150, yStart, green)
+        textBox(screen, str(0), "white", X -100, yStart, green)
+        greenTotalPts = greenTotalPts + 0
+        yStart += 30
+    textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
+    textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
+    return
 
-# def render():
-#         # Render background
-#         game.background()
 
-#         # Define the font for player names
-#         font = pygame.font.Font(None, 36)
-
-#         # Update and draw player lines and names for red players
-#         for i, player in enumerate(game.red_players):
-#             game.red_lines[i].setPlayer(player)
-#             game.red_lines[i].draw(game.screen)
-#             text = font.render(player, True, (255, 0, 0))  # Red color for red players
-#             game.screen.blit(text, (10, i*40))  # Adjust the position as needed
-
-#         # Update and draw player lines and names for green players
-#         for i, player in enumerate(game.green_players):
-#             game.green_lines[i].setPlayer(player)
-#             game.green_lines[i].draw(game.screen)
-#             text = font.render(player, True, (0, 255, 0))  # Green color for green players
-#             game.screen.blit(text, (game.X - 100, i*40))  # Adjust the position as needed
-
-#         # Draw input boxes
-#         for box in game.input_boxes:
-#             box.draw(game.screen)
-        # Draw buttons
-
-# pass in the game object from 
 def runGame(redTeam,greenTeam):
     running = True
     pygame.init()
@@ -76,11 +78,7 @@ def runGame(redTeam,greenTeam):
     top_left_rect = pygame.Rect(0, 0, X // 2, Y // 2)
     top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
 
-    # Create text boxes for code names and game scores
     
-    # Divide each rectangle into a 15 row by 2 column grid
-    row_height = top_left_rect.height // 15
-    column_width = top_left_rect.width // 2
 
 
     # Create bottom half section
@@ -107,31 +105,13 @@ def runGame(redTeam,greenTeam):
                     # Quit the game
                     pygame.quit()
                     sys.exit()
-
-
-        # Fill the screen with colors
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
-        yStart = 50
-        for x in redTeam:
-            name = x.get('name')
-            textBox(screen, name, "white", 100, yStart, red)
-            yStart += 30
-        yStart = 50
-        for x in greenTeam:
-            name = x.get('name')
-            textBox(screen, name, "white", X//2+100, yStart, green)
-            yStart += 30
-
-        #render(game)
-
-        
-
+        displayScore(screen, redTeam, greenTeam)
         pygame.display.flip()
         
         clock.tick(60)
 
-
-
-#runGame()
+# runGame([{'id': 'cb11fbec-e37f-4a99-97c7-766c6d223c5e', 'player_id': 1, 'name': 'Gerry', 'equip_id': None, 'team': None}, {'id': '2931ac5d-23d5-41aa-9e16-75eadc4820a8', 'player_id': 3, 'name': 'Dean', 'equip_id': None, 'team': None}],
+# [{'id': '3c666b96-c7e4-43dd-897f-5db19bc17bff', 'player_id': 2, 'name': 'Gavinnn', 'equip_id': None, 'team': None}, {'id': 'ff8de667-6c5d-4cc0-bd12-ee6c4af3a70a', 'player_id': 4, 'name': 'Norman', 'equip_id': None, 'team': None}])
