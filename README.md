@@ -78,24 +78,16 @@ Team Number: 19
 
 ## How to play Photon
 
-1. Make sure you have the required packages installed (see above)
+1. Run ```main.py```
 
-2. Run ```python3 main.py``` in the project directory
+2. Press ```KEY``` to add players
 
-3. Enter Player ID in the lower most text box (it may be hard to see on larger monitors)
+2. Press ```F12``` to clear all players
 
-4. Enter Equipment ID in the text box above the Player ID
+3. Once all players have been added, press ```F5``` to start the game
 
-5. Press the ```Add Player``` button to add the player to the game
+4. The game will take 6 minutes
 
-6. If the Player ID is not found in the database, enter the player's name in the top text box and press the ```Create Player``` button to add the player to the database
+5. Check the display window to see updates for which team is winning
 
-7. Press ```F12``` to clear all players
-
-8. Once all players have been added, press ```F5``` to start the game
-
-9. The game will take 6 minutes
-
-10. Check the display window to see updates for which team is winning
-
-11. When the game is completer, return to the home base to see which team wins!
+6. When the game is completer, return to the home base to see which team wins!
