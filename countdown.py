@@ -22,29 +22,41 @@ def events():
                 pygame.quit()
                 sys.exit()
 
-def splashScreen():
+def countdown():
     # activate the pygame library .
     pygame.init()
 
     # create the display surface object
     # of specific dimension..e(X, Y).
-    screen = pygame.display.set_mode((680,400))
+    screen = pygame.display.set_mode((600,480))
 
     # set the pygame window name
-    pygame.display.set_caption('Splash Image')
+    pygame.display.set_caption('Countdown')
 
     # create a surface object, image is drawn on it.
-    imp = pygame.image.load("resources/logo.jpg").convert()
-    imp = pygame.transform.scale(imp, (screen.get_size()))
+    images: pygame.image = []
+    for i in range(31):
+        temp = pygame.image.load("resources/countdown_images/" + str(i) + ".tif").convert()
+        images.append(temp) 
+    background = pygame.image.load("resources/countdown_images/background.tif").convert()
+    
 
     # Using blit to copy content from one surface to other
-    screen.blit(imp, (0, 0))
+    screen.blit(background, (0, 0))
 
     # paint screen one time
     pygame.display.flip()
 
-    # loop for 5 seconds to show the splash screen
-    # Also wait for possible user input
+    
+    i = len(images) - 1 #starting index
     start_time = time.time()
-    while time.time() - start_time < 5:
+    while time.time() - start_time < 30:
         events()
+        timerNum = images[i]
+        timerNumWidth = background.get_width()/2-images[i].get_width()/2
+        timerNumHeight = background.get_height()/2 - 18
+        
+        screen.blit(timerNum, (timerNumWidth, timerNumHeight))
+        pygame.display.flip()
+        time.sleep(1)
+        i = i-1
