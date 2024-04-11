@@ -1,5 +1,4 @@
-import socket, threading, Dict
-
+import socket, threading
 RECEIVE_PORT = 7501
 BROADCAST_PORT = 7500
 FORMAT = 'utf-8'
@@ -18,6 +17,8 @@ class Server():
    def start(self):
        print(f'[LISTENING] server is listening on {self.server_recv}')
        
+       # update array to store points
+        # format of each appended dictionary: {"equip_id" : int, "hit_id" : int, "points" : int}
        self.up_arr = []
 
        # start listening for new connections

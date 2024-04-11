@@ -1,6 +1,9 @@
-import pygame, sys, random, os
+import pygame, sys, random, os, time
+from main import server  # import server object from main.py
 
 # pygame setup
+
+lastTime = 0
 
 # Main game loop
 def events():
@@ -28,6 +31,26 @@ def textBox(screen, input, color, x, y, bg):
     textRect = text.get_rect()
     textRect.center = (x, y)
     return screen.blit(text, textRect)
+
+
+def getUpdates():
+    # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
+    # who calls actionScreen.py? game file can have a function that calls this function
+    startTime = time.time()
+    time.sleep(1)
+    # Check if one second has passed
+    time = pygame.time.get_ticks()
+
+    if time - startTime >= 1000:
+        # Check if there are updates from the server
+        updateArray = server.points_to_game()
+        # parse the updateArray
+        for update in updateArray:
+            equip_id = update.get('equip_id')
+            hit_id = update.get('hit_id')
+            points = update.get('points')
+            # Update the screen 
+                # callable function that takes in each update and updates the screen
 
 
 # def render():
