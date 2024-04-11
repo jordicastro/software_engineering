@@ -56,6 +56,15 @@ def displayScore(screen, redTeam, greenTeam):
     textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
     textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
     return
+def timerDisplay(currentTime, startTime, screen):
+    left = 360 - (currentTime-startTime)
+    min = int(left//60)
+    sec = int(left%60)
+    secStr = str(sec)
+    if (sec < 10):
+        secStr = "0" + secStr
+    timer = str(min) + ":" + secStr
+    textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
 def countdownHelper():
     countdown()
 def runGame(redTeam,greenTeam):
@@ -105,9 +114,10 @@ def runGame(redTeam,greenTeam):
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
         displayScore(screen, redTeam, greenTeam)
-        pygame.display.flip()
-        if ( time.time() - countdown >= 6000):
+        if ( time.time() - countdown >= 360):
             running = False
             return
+        timerDisplay(time.time(), countdown, screen)
+        pygame.display.flip()
         clock.tick(60)
 
