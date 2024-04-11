@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random, os
 
 # pygame setup
 
@@ -86,7 +86,17 @@ def runGame(redTeam,greenTeam):
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
+    # ~ Music ~
+    tracks = os.listdir('resources/photon_tracks')
+
+    # Select a random track
+    track = random.choice(tracks)
     
+
+    # Load and play the track
+    pygame.mixer.music.load(os.path.join('resources/photon_tracks', track))
+    pygame.mixer.music.play(-1)  # -1 means loop indefinitely
+
     # Create text box for game events
 
     while running:
