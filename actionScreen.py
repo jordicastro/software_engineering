@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, time
 
 # pygame setup
 
@@ -86,7 +86,7 @@ def runGame(redTeam,greenTeam):
 
     
     # Create text box for game events
-
+    countdown = time.time()
     while running:
 
         for event in pygame.event.get():
@@ -110,8 +110,10 @@ def runGame(redTeam,greenTeam):
         screen.fill((0, 0, 0), bottom_rect)
         displayScore(screen, redTeam, greenTeam)
         pygame.display.flip()
-        
+        if ( time.time() - countdown >= 6000):
+            running = False
+            return
         clock.tick(60)
 
-# runGame([{'id': 'cb11fbec-e37f-4a99-97c7-766c6d223c5e', 'player_id': 1, 'name': 'Gerry', 'equip_id': None, 'team': None}, {'id': '2931ac5d-23d5-41aa-9e16-75eadc4820a8', 'player_id': 3, 'name': 'Dean', 'equip_id': None, 'team': None}],
-# [{'id': '3c666b96-c7e4-43dd-897f-5db19bc17bff', 'player_id': 2, 'name': 'Gavinnn', 'equip_id': None, 'team': None}, {'id': 'ff8de667-6c5d-4cc0-bd12-ee6c4af3a70a', 'player_id': 4, 'name': 'Norman', 'equip_id': None, 'team': None}])
+runGame([{'id': 'cb11fbec-e37f-4a99-97c7-766c6d223c5e', 'player_id': 1, 'name': 'Gerry', 'equip_id': None, 'team': None}, {'id': '2931ac5d-23d5-41aa-9e16-75eadc4820a8', 'player_id': 3, 'name': 'Dean', 'equip_id': None, 'team': None}],
+[{'id': '3c666b96-c7e4-43dd-897f-5db19bc17bff', 'player_id': 2, 'name': 'Gavinnn', 'equip_id': None, 'team': None}, {'id': 'ff8de667-6c5d-4cc0-bd12-ee6c4af3a70a', 'player_id': 4, 'name': 'Norman', 'equip_id': None, 'team': None}])
