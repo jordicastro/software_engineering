@@ -1,6 +1,5 @@
 import pygame, sys, time
-
-# pygame setup
+from countdown import countdown
 
 # Main game loop
 def events():
@@ -57,9 +56,10 @@ def displayScore(screen, redTeam, greenTeam):
     textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
     textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
     return
-
-
+def countdownHelper():
+    countdown()
 def runGame(redTeam,greenTeam):
+    countdownHelper()
     running = True
     pygame.init()
     desktop = pygame.display.Info()
@@ -78,13 +78,9 @@ def runGame(redTeam,greenTeam):
     top_left_rect = pygame.Rect(0, 0, X // 2, Y // 2)
     top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
 
-    
-
-
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
-    
     # Create text box for game events
     countdown = time.time()
     while running:
@@ -115,5 +111,3 @@ def runGame(redTeam,greenTeam):
             return
         clock.tick(60)
 
-runGame([{'id': 'cb11fbec-e37f-4a99-97c7-766c6d223c5e', 'player_id': 1, 'name': 'Gerry', 'equip_id': None, 'team': None}, {'id': '2931ac5d-23d5-41aa-9e16-75eadc4820a8', 'player_id': 3, 'name': 'Dean', 'equip_id': None, 'team': None}],
-[{'id': '3c666b96-c7e4-43dd-897f-5db19bc17bff', 'player_id': 2, 'name': 'Gavinnn', 'equip_id': None, 'team': None}, {'id': 'ff8de667-6c5d-4cc0-bd12-ee6c4af3a70a', 'player_id': 4, 'name': 'Norman', 'equip_id': None, 'team': None}])
