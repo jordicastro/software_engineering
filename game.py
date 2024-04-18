@@ -76,7 +76,7 @@ class Game:
             box.draw(self.screen)
         # Draw buttons
         for button in self.buttons:
-            button.process(self.screen)
+            button.draw(self.screen)
 
     # Render title
     def title(self):
@@ -119,9 +119,9 @@ class Game:
         self.textBox("Name", 32, "white", redX+redW-100-100, redY+30, RED)
         self.textBox("Name", 32, "white", greenX+greenW-100-100, greenY+30, GREEN)
         # Labels for inputs
-        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2+100+40+75, (128,23,23))
+        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
         self.textBox("Equipment ID:", 20, "white", self.X/2-100-100, self.Y/2+50+40+75, (128,23,23))
-        self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
+        self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2+100+40+75, (128,23,23))
 
     # Initialize player lines
     def initPlayerLines(self, num_boxes):
@@ -178,12 +178,12 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        idField = InputBox(X/2-105, Y/2+100+75, 200, 32, True)
-        self.input_boxes.append(idField)
+        nameField = InputBox(X/2-105, Y/2+100+75, 200, 32, True)
+        self.input_boxes.append(nameField)
         equipmentField = InputBox(X/2-105, Y/2+50+75, 200, 32, True)
         self.input_boxes.append(equipmentField)
-        nameField = InputBox(X/2-105, Y/2+75, 200, 32, True)
-        self.input_boxes.append(nameField)
+        idField = InputBox(X/2-105, Y/2+75, 200, 32, True)
+        self.input_boxes.append(idField)
 
         # Check if player exists in database and decide whether to add or create player
         def checkPlayer():
