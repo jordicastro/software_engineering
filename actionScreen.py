@@ -71,6 +71,7 @@ def timerDisplay(currentTime, startTime, screen):
     timer = str(min) + ":" + secStr
     textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
 def countdownHelper():
+    
     countdown()
 
 def getUpdates():
@@ -169,6 +170,7 @@ def runGame(redTeam,greenTeam):
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
         displayScore(screen, redTeam, greenTeam)
+        pygame.display.flip()
         if ( time.time() - countdown >= 360):
             running = False
             return

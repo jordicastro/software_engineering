@@ -14,7 +14,7 @@ class Server():
        self.server_thread = threading.Thread(target=self.start)
        self.server_thread.start()
 
-    def start(self):
+    def start(self):       
         print(f'[LISTENING] server is listening on {self.server_recv}')
         
         self.up_arr = []
@@ -32,9 +32,18 @@ class Server():
                client_thread = threading.Thread(target=self.handle_client(equip_id))
                client_thread.start()
 
+    def start_traffic(self):
+        # Start game by broadcasting code 202
+        self.server_broadcast.sendto(str("202").encode(FORMAT), BROADCAST_ADDR)
+
     def stop(self):
-       self.server_recv.close()
-       self.server_broadcast.close()
+        # Stop game by broadcasting code 221 3 times
+        self.server_broadcast.sendto(str("221").encode(FORMAT), BROADCAST_ADDR)
+        self.server_broadcast.sendto(str("221").encode(FORMAT), BROADCAST_ADDR)
+        self.server_broadcast.sendto(str("221").encode(FORMAT), BROADCAST_ADDR)
+        
+        self.server_recv.close()
+        self.server_broadcast.close()
 
     def handle_client(self, msg:str): # receive dictionary (int : int) on port 7501, send back broadcast (int) on port 7500
         if(':' in msg):
