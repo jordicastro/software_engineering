@@ -15,10 +15,7 @@ class Server():
         self.server_thread = threading.Thread(target=self.start)
         self.server_thread.start()
 
-    def start(self):
-        # Start game by broadcasting code 202
-        self.server_broadcast.sendto(str("202").encode(FORMAT), BROADCAST_ADDR)
-        
+    def start(self):       
         print(f'[LISTENING] server is listening on {self.server_recv}')
         
         self.up_arr = []
@@ -35,6 +32,10 @@ class Server():
                 # send info to handle_client using threads
                 client_thread = threading.Thread(target=self.handle_client(equip_id))
                 client_thread.start()
+
+    def start_traffic(self):
+        # Start game by broadcasting code 202
+        self.server_broadcast.sendto(str("202").encode(FORMAT), BROADCAST_ADDR)
 
     def stop(self):
         # Stop game by broadcasting code 221 3 times
