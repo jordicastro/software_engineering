@@ -1,6 +1,5 @@
 from server import Server
 from splash import splashScreen
-from countdown import countdown
 from gui import *
 from actionScreen import runGame
 import pygame, sys
@@ -157,11 +156,9 @@ class Game:
             print("Error creating player")
         return ret
     def onStartHelper(self):
-        countdown()
         print("Starting game")
         print(self.red_players)
         print(self.green_players)
-        #runGame()
         runGame(self.red_players,self.green_players)
     # Run main game
     def run(self):

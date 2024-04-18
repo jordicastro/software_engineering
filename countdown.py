@@ -47,7 +47,7 @@ def countdown():
     # paint screen one time
     pygame.display.flip()
 
-    
+    clock = pygame.time.Clock()
     i = len(images) - 1 #starting index
     start_time = time.time()
     while time.time() - start_time < 30:
@@ -58,5 +58,5 @@ def countdown():
         
         screen.blit(timerNum, (timerNumWidth, timerNumHeight))
         pygame.display.flip()
-        time.sleep(1)
+        clock.tick(1)
         i = i-1

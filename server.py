@@ -1,4 +1,4 @@
-import socket, threading
+import socket, threading, Dict
 
 RECEIVE_PORT = 7501
 BROADCAST_PORT = 7500
@@ -17,6 +17,8 @@ class Server():
 
     def start(self):
         print(f'[LISTENING] server is listening on {self.server_recv}')
+        
+        self.up_arr = []
 
         # start listening for new connections
         while True:
@@ -38,13 +40,13 @@ class Server():
     def handle_client(self, msg:str): # receive dictionary (int : int) on port 7501, send back broadcast (int) on port 7500
         if(':' in msg):
             try:
-                transmit_id = int(msg.split(':')[0])
-                hit_id = int(msg.split(':')[1])
+                transmit_id = msg.split(':')[0]
+                hit_id = msg.split(':')[1]
             except ValueError:
                 print('Invalid message format. Expected: player_id:hit_id')
-
+                
             print(f'\t[BROADCASTING] hit_id {hit_id}, transmit_id {transmit_id} received. broadcasting to clients...')
-            self.server_broadcast.sendto(str(hit_id).encode(FORMAT), BROADCAST_ADDR)
+            self.send_hit_id(transmit_id, hit_id)
         else:
             print(f'\t[BROADCASTING] msg {msg} received and joined. broadcasting to clients...')
             self.server_broadcast.sendto(str(msg).encode(FORMAT), BROADCAST_ADDR)
@@ -60,14 +62,54 @@ class Server():
         client_thread = threading.Thread(target=self.handle_client(str(equip_id)))
         client_thread.start()
 
-    # This can be used to send the hit id to the server
-    # This is used for testing purposes
+    ## This can be used to send the hit id to the server
+    # Calls update_points to update the points of the player in the server
+    # Player is only deactivated if they are hit by an enemy
     def send_hit_id(self, equip_id, hit_id):
-        #handle friendly fire:
-        if equip_id % 2 == 0 and hit_id % 2 == 0 or equip_id % 2 == 1 and hit_id % 2 == 1:
+        # Next bit assumes:
+        # - 43 is Green Base
+        # - 53 is Red Base
+        # - Even equip_id is Green
+        # - Odd equip_id is Red
+        message = ''
+        
+        # Base got hit
+        if hit_id == '43':
+            if equip_id % 2 == 0:
+                print(f'[GREEN BASE HIT] [FRIENDLY FIRE] {hit_id} hit by {equip_id}')
+            else:
+                self.update_points(equip_id, 100)
+                message = f'{hit_id}'
+        elif hit_id == '53':
+            if equip_id % 2 != 0:  
+                print(f'[RED BASE HIT] [FRIENDLY FIRE] hit by {equip_id}')
+                message = f'{hit_id}'
+            else:
+                self.update_points(equip_id, 100)
+                message = f'{hit_id}'
+        
+        # Player got hit
+        elif (equip_id + hit_id) % 2 == 0:
+            # friendly fire, both players get deactivated
             print(f'[FRIENDLY FIRE] transmitting self id')
-            message = f'{equip_id}:{equip_id}'.encode(FORMAT)
+            self.update_points(equip_id, -10)
+            message = f'{equip_id}'
+            print(f'\t[SENDING IDs] Sending message {message} to Server')
+            self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
+            message = f'{hit_id}'
         else:
-            message = f'{equip_id}:{hit_id}'.encode(FORMAT)
-        print(f'\t[SENDING IDs] Sending message {message} to Server')
-        self.server_broadcast.sendto(message, BROADCAST_ADDR)
+            self.update_points(equip_id, 10)
+            message = f'{hit_id}'
+            
+        if message != '':
+            print(f'\t[SENDING IDs] Sending message {message} to Server')
+            self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
+
+    # This can be used to update the points of the player in the server
+    def update_points(self, equip_id, points, prev_seg):
+        print('[UPDATING POINTS] updating points...')
+        print(f'\t[POINTS] player {equip_id} got {points} points')
+        
+        up_dict = dict(equip_id, points)
+        self.up_arr.append(up_dict)
+        return self.up_arr[prev_seg:]
