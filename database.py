@@ -1,4 +1,3 @@
-import os
 from supabase import Client, create_client
 
 # Database class
@@ -27,49 +26,43 @@ class Database:
             print(readable_id + "\t" + str(row['player_id']) + "\t\t" + row['name'] + "\t" + str(row['equip_id']) + "\t\t" + str(row['team']))
 
     # Insert a new row into the table
-    def insert(self, player_id, name):
+    def insert(self, player_id: int, name: str) -> bool:
         # Insert the new row
         ret = self.supabase.table(self.table).insert({"player_id": int(player_id), "name": name}).execute()
         # Return whether the insert was successful
-        return True
+        return len(ret.data) > 0
 
     # Update a row in the table
-    def update(self, player_id, name, equip_id):
+    def update(self, player_id: int, name: str) -> bool:
         # Create a dictionary to store the data to update
         data = {}
         # If the name is not empty, add it to the dictionary
         if name != "":
             data["name"] = name
-        # If the equip_id is not empty and not "NULL", add it to the dictionary
-        if equip_id != "" and equip_id != "NULL":
-            data["equip_id"] = int(equip_id)
-        # If the equip_id is "NULL", set it to None (NULL)
-        elif equip_id == "NULL":
-            data["equip_id"] = None
         # Update the row
         ret = self.supabase.table(self.table).update(data).eq('player_id', player_id).execute()
         # Return whether the update was successful
-        return True
+        return len(ret.data) > 0
 
     # Delete a row from the table
-    def delete(self, player_id):
+    def delete(self, player_id: int) -> bool:
         # Delete the row
-        ret = self.supabase.table(self.table).delete().eq('player_id', id).execute()
+        ret = self.supabase.table(self.table).delete().eq('player_id', player_id).execute()
         # Return whether the delete was successful
-        return True
+        return len(ret.data) > 0
 
     # Check if the player_id exists in the table
-    def check_id(self, player_id):
+    def check_id(self, player_id: int) -> bool:
         # Check if the player_id exists
-        if player_id == "":
+        if str(player_id) == "":
             return False
         ret = self.supabase.table(self.table).select("*").eq('player_id', player_id).execute()
         # Return whether the player_id exists
         return len(ret.data) > 0
 
     # Select a row from the table
-    def select(self, player_id):
+    def select(self, player_id: int):
         # Select the row
-        ret = self.supabase.table(self.table).select("*").eq('player_id', player_id).execute()
+        ret = self.supabase.table(self.table).select("*").eq('player_id', player_id).single().execute()
         # Return the selected row
-        return ret.data[0]
+        return ret.data
