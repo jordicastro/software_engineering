@@ -110,7 +110,9 @@ def getUpdates():
         # Update the screen 
             # callable function that takes in each update and updates the screen
 def updateScreen(msg_array):
-    pass
+    for msg in msg_array:
+        print(msg)
+
 
 def runGame(redTeam,greenTeam):
     countdownHelper()

@@ -7,7 +7,7 @@ RECEIVE_ADDR = (SERVER, RECEIVE_PORT)
 BROADCAST_ADDR = (SERVER, BROADCAST_PORT)
 
 class Server():
-   def __init__(self):
+    def __init__(self):
        self.server_recv = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
        self.server_recv.bind(RECEIVE_ADDR)
        self.server_broadcast = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -20,7 +20,7 @@ class Server():
         self.up_arr = []
 
        # start listening for new connections
-       while True:
+        while True:
            data, addr = self.server_recv.recvfrom(1024)
            if data:
                print(f'[CONNECTION] connection from {addr} received.')
@@ -32,7 +32,7 @@ class Server():
                client_thread = threading.Thread(target=self.handle_client(equip_id))
                client_thread.start()
 
-   def stop(self):
+    def stop(self):
        self.server_recv.close()
        self.server_broadcast.close()
 
@@ -51,11 +51,11 @@ class Server():
             self.server_broadcast.sendto(str(msg).encode(FORMAT), BROADCAST_ADDR)
 
 
-   def add_player(self, player_id: int) -> None:
+    def add_player(self, player_id: int) -> None:
        self.server_broadcast.sendto(str(player_id).encode(FORMAT), BROADCAST_ADDR)
 
    # transmit equipment codes after each player addition
-   def send_id(self, equip_id): # sends id of newly created player & id of player hit
+    def send_id(self, equip_id): # sends id of newly created player & id of player hit
        # sending msg to server
        client_thread = threading.Thread(target=self.handle_client(str(equip_id)))
        client_thread.start()
@@ -63,7 +63,7 @@ class Server():
    ## This can be used to send the hit id to the server
    # Calls update_points to update the points of the player in the server
    # Player is only deactivated if they are hit by an enemy
-   def send_hit_id(self, equip_id, hit_id):
+    def send_hit_id(self, equip_id, hit_id):
        # Next bit assumes:
        # - 43 is Green Base
        # - 53 is Red Base
