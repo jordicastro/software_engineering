@@ -67,6 +67,24 @@ def timerDisplay(currentTime, startTime, screen):
     textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
 def countdownHelper():
     countdown()
+
+def getUpdates():
+    # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
+    # who calls actionScreen.py? game file can have a function that calls this function
+
+
+    if time - startTime >= 1000:
+        # Check if there are updates from the server
+        updateArray = server.points_to_game(lastUpdate)
+        lastUpdate = lastUpdate + len(updateArray)
+        # parse the updateArray
+        for update in updateArray:
+            equip_id = update.get('equip_id')
+            hit_id = update.get('hit_id')
+            points = update.get('points')
+            # Update the screen 
+                # callable function that takes in each update and updates the screen
+
 def runGame(redTeam,greenTeam):
     countdownHelper()
     running = True
@@ -110,6 +128,11 @@ def runGame(redTeam,greenTeam):
                     # Quit the game
                     pygame.quit()
                     sys.exit()
+
+        if (time.time() - lastTime) >= 1:
+            getUpdates()
+            lastTime = time.time()
+            
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
