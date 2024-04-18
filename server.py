@@ -17,7 +17,7 @@ class Server():
 
     def start(self):
         print(f'[LISTENING] server is listening on {self.server_recv}')
-        
+
         self.up_arr = []
 
         # start listening for new connections
@@ -37,14 +37,14 @@ class Server():
         self.server_recv.close()
         self.server_broadcast.close()
 
-    def handle_client(self, msg:str): # receive dictionary (int : int) on port 7501, send back broadcast (int) on port 7500
+    def handle_client(self, msg: str): # receive dictionary (int : int) on port 7501, send back broadcast (int) on port 7500
         if(':' in msg):
             try:
                 transmit_id = msg.split(':')[0]
                 hit_id = msg.split(':')[1]
             except ValueError:
                 print('Invalid message format. Expected: player_id:hit_id')
-                
+
             print(f'\t[BROADCASTING] hit_id {hit_id}, transmit_id {transmit_id} received. broadcasting to clients...')
             self.send_hit_id(transmit_id, hit_id)
         else:
@@ -57,7 +57,7 @@ class Server():
         self.server_broadcast.sendto(str(player_id).encode(FORMAT), BROADCAST_ADDR)
 
     # transmit equipment codes after each player addition
-    def send_id(self, equip_id): # sends id of newly created player & id of player hit
+    def send_id(self, equip_id: int): # sends id of newly created player & id of player hit
         # sending msg to server
         client_thread = threading.Thread(target=self.handle_client(str(equip_id)))
         client_thread.start()
@@ -72,7 +72,7 @@ class Server():
         # - Even equip_id is Green
         # - Odd equip_id is Red
         message = ''
-        
+
         # Base got hit
         if hit_id == '43':
             if equip_id % 2 == 0:
@@ -81,13 +81,13 @@ class Server():
                 self.update_points(equip_id, 100)
                 message = f'{hit_id}'
         elif hit_id == '53':
-            if equip_id % 2 != 0:  
+            if equip_id % 2 != 0:
                 print(f'[RED BASE HIT] [FRIENDLY FIRE] hit by {equip_id}')
                 message = f'{hit_id}'
             else:
                 self.update_points(equip_id, 100)
                 message = f'{hit_id}'
-        
+
         # Player got hit
         elif (equip_id + hit_id) % 2 == 0:
             # friendly fire, both players get deactivated
@@ -100,16 +100,16 @@ class Server():
         else:
             self.update_points(equip_id, 10)
             message = f'{hit_id}'
-            
+
         if message != '':
             print(f'\t[SENDING IDs] Sending message {message} to Server')
             self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
 
     # This can be used to update the points of the player in the server
-    def update_points(self, equip_id, points, prev_seg):
+    def update_points(self, equip_id: int, points: int, prev_seg):
         print('[UPDATING POINTS] updating points...')
         print(f'\t[POINTS] player {equip_id} got {points} points')
-        
+
         up_dict = dict(equip_id, points)
         self.up_arr.append(up_dict)
         return self.up_arr[prev_seg:]

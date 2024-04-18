@@ -1,3 +1,4 @@
+from typing import Callable
 import pygame as pg
 from player import Player
 
@@ -8,25 +9,29 @@ FONT = pg.font.Font(None, 32)
 
 # User input box
 class InputBox:
-    def __init__(self, x, y, w, h, edit=False, text=''):
+    def __init__(self, x: int, y: int, w: int, h: int, edit: bool = False, text: str = ''):
         self.rect = pg.Rect(x, y, w, h)
         self.color = COLOR_INACTIVE
         self.text = text
         self.txt_surface = FONT.render(text, True, self.color)
         self.active = False
-        self.canEdit = edit
+        self.can_edit = edit
 
     def flip_active(self):
         self.active = not self.active
         self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+
     def clear(self):
         self.text = ''
+
     def getActive(self):
         return self.active
+
     def getText(self):
         return self.text
-    def handle_event(self, event):
-        if self.canEdit:
+
+    def handle_event(self, event: pg.event.Event):
+        if self.can_edit:
             if event.type == pg.MOUSEBUTTONDOWN:
                 # If the user clicked on the input_box rect.
                 if self.rect.collidepoint(event.pos):
@@ -44,8 +49,6 @@ class InputBox:
                         print(self.text)
                     elif event.key == pg.K_BACKSPACE:
                         self.text = self.text[:-1]
-                    elif event.key == pg.K_TAB:
-                        self.text = self.text
                     elif event.key == pg.K_DELETE:
                         self.text = ""
                     else:
@@ -53,12 +56,7 @@ class InputBox:
         # Re-render the text.
         self.txt_surface = FONT.render(self.text, True, self.color)
 
-    def update(self): #Don't currently need
-        # Resize the box if the text is too long.
-        #width = max(200, self.txt_surface.get_width()+10)
-        #self.rect.w = width
-        return
-    def draw(self, screen):
+    def draw(self, screen: pg.Surface):
         # Blit the text.
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
@@ -66,77 +64,90 @@ class InputBox:
 
 # User input line (two input boxes, one for ID and one for name)
 class InputLine:
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x: int, y: int, w: int, h: int, text: str = ''):
         self.id = InputBox(x, y, w, h)
         self.name = InputBox(x+w, y, w, h)
         self.input_line = [self.id, self.name]
+
     def getIDBox(self):
         return self.id
+
     def getNameBox(self):
         return self.name
+
     def getID(self):
         return self.id.text
+
     def getName(self):
         return self.name.text
-    def setID(self, text):
+
+    def setID(self, text: int):
         self.id.text = str(text)
-    def setName(self, text):
+
+    def setName(self, text: str):
         self.name.text = text
+
     def setPlayer(self, player_data: Player):
         self.id.text = str(player_data.player_id)
         self.name.text = player_data.name
+
     def clear(self):
         self.id.clear()
         self.name.clear()
-    def draw(self, screen):
+
+    def draw(self, screen: pg.Surface):
         self.id.draw(screen)
         self.name.draw(screen)
-    def handle_event(self, event):
+
+    def handle_event(self, event: pg.event.Event):
         self.id.handle_event(event)
         self.name.handle_event(event)
 
 # User input button
 class Button():
-    def __init__(self, x, y, width, height, onclickFunction=None, buttonText='Button', onePress=False):
+    def __init__(self, x: int, y: int, width: int, height: int, onPress: Callable = None, text: str = 'Button', single: bool = False):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.onclickFunction = onclickFunction
-        self.onePress = onePress
-        self.alreadyPressed = False
-        self.text = buttonText
+        self.on_click_function = onPress
+        self.one_press = single
+        self.already_pressed = False
+        self.text = text
 
-        self.fillColors = {
+        self.fill_colors = {
             'normal': '#ffffff',
             'hover': '#666666',
             'pressed': '#333333',
         }
-        self.buttonSurface = pg.Surface((self.width, self.height))
-        self.buttonRect = pg.Rect(self.x, self.y, self.width, self.height)
+        self.surface = pg.Surface((self.width, self.height))
+        self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
-        self.buttonSurf = FONT.render(buttonText, True, (20, 20, 20))
+        self.button_surf = FONT.render(text, True, (20, 20, 20))
+
     def getText(self):
         return self.text
-    def setText(self, text):
+
+    def setText(self, text: str):
         self.text = text
-        self.buttonSurf = FONT.render(text, True, (20, 20, 20))
-    def process(self, screen):
+        self.button_surf = FONT.render(text, True, (20, 20, 20))
+
+    def process(self, screen: pg.Surface):
         mousePos = pg.mouse.get_pos()
-        self.buttonSurface.fill(self.fillColors['normal'])
-        if self.buttonRect.collidepoint(mousePos):
-            self.buttonSurface.fill(self.fillColors['hover'])
+        self.surface.fill(self.fill_colors['normal'])
+        if self.rect.collidepoint(mousePos):
+            self.surface.fill(self.fill_colors['hover'])
             if pg.mouse.get_pressed(num_buttons=3)[0]:
-                self.buttonSurface.fill(self.fillColors['pressed'])
-                if self.onePress:
-                    self.onclickFunction()
-                elif not self.alreadyPressed:
-                    self.onclickFunction()
-                    self.alreadyPressed = True
+                self.surface.fill(self.fill_colors['pressed'])
+                if self.one_press:
+                    self.on_click_function()
+                elif not self.already_pressed:
+                    self.on_click_function()
+                    self.already_pressed = True
             else:
-                self.alreadyPressed = False
-        self.buttonSurface.blit(self.buttonSurf, [
-            self.buttonRect.width/2 - self.buttonSurf.get_rect().width/2,
-            self.buttonRect.height/2 - self.buttonSurf.get_rect().height/2
+                self.already_pressed = False
+        self.surface.blit(self.button_surf, [
+            self.rect.width/2 - self.button_surf.get_rect().width/2,
+            self.rect.height/2 - self.button_surf.get_rect().height/2
         ])
-        screen.blit(self.buttonSurface, self.buttonRect)
+        screen.blit(self.surface, self.rect)

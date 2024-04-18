@@ -1,7 +1,7 @@
 # importing required library
 import pygame,time, sys, os
 
-os.environ['SDL_VIDEO_CENTERED'] = '1' 
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 def events():
     # Check for events
@@ -37,9 +37,9 @@ def countdown():
     images: pygame.image = []
     for i in range(31):
         temp = pygame.image.load("resources/countdown_images/" + str(i) + ".tif").convert()
-        images.append(temp) 
+        images.append(temp)
     background = pygame.image.load("resources/countdown_images/background.tif").convert()
-    
+
 
     # Using blit to copy content from one surface to other
     screen.blit(background, (0, 0))
@@ -55,7 +55,7 @@ def countdown():
         timerNum = images[i]
         timerNumWidth = background.get_width()/2-images[i].get_width()/2
         timerNumHeight = background.get_height()/2 - 18
-        
+
         screen.blit(timerNum, (timerNumWidth, timerNumHeight))
         pygame.display.flip()
         clock.tick(1)

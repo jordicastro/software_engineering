@@ -94,9 +94,9 @@ class Game:
         return self.screen.blit(title, textRect)
 
     # Render text box
-    def textBox(self, input, fontSize: int, color, x, y, bg):
+    def textBox(self, input: str, fontSize: int, color: str, x: int, y: int, bg: tuple):
         font = pygame.font.Font('freesansbold.ttf', fontSize)
-        text = font.render(input, True, (color), (bg))
+        text = font.render(input, True, color, bg)
         textRect = text.get_rect()
         textRect.center = (x, y)
         return self.screen.blit(text, textRect)
@@ -132,7 +132,7 @@ class Game:
             self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
 
     # Initialize player lines
-    def initPlayerLines(self, num_boxes):
+    def initPlayerLines(self, num_boxes: int):
         # Set up variables
         start = 128
         height = 32

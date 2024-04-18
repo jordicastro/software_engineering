@@ -1,7 +1,7 @@
 # importing required library
 import pygame,time, sys, os
 
-os.environ['SDL_VIDEO_CENTERED'] = '1' 
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 def events():
     # Check for events
