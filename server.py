@@ -1,4 +1,4 @@
-import socket, threading, Dict
+import socket, threading
 
 RECEIVE_PORT = 7501
 BROADCAST_PORT = 7500
