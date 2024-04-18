@@ -1,9 +1,5 @@
-import pygame, sys, random, os, time
-from main import server  # import server object from main.py
-
-# pygame setup
-
-lastTime = 0
+import pygame, sys, time
+from countdown import countdown
 
 # Main game loop
 def events():
@@ -29,58 +25,50 @@ def textBox(screen, input, color, x, y, bg):
     font = pygame.font.Font('freesansbold.ttf', 32)
     text = font.render(input, True, (color), (bg))
     textRect = text.get_rect()
-    textRect.center = (x, y)
+    textRect.bottomleft = (x, y)
     return screen.blit(text, textRect)
 
-
-def getUpdates():
-    # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
-    # who calls actionScreen.py? game file can have a function that calls this function
-    startTime = time.time()
-    time.sleep(1)
-    # Check if one second has passed
-    time = pygame.time.get_ticks()
-
-    if time - startTime >= 1000:
-        # Check if there are updates from the server
-        updateArray = server.points_to_game()
-        # parse the updateArray
-        for update in updateArray:
-            equip_id = update.get('equip_id')
-            hit_id = update.get('hit_id')
-            points = update.get('points')
-            # Update the screen 
-                # callable function that takes in each update and updates the screen
-
-
-# def render():
-#         # Render background
-#         game.background()
-
-#         # Define the font for player names
-#         font = pygame.font.Font(None, 36)
-
-#         # Update and draw player lines and names for red players
-#         for i, player in enumerate(game.red_players):
-#             game.red_lines[i].setPlayer(player)
-#             game.red_lines[i].draw(game.screen)
-#             text = font.render(player, True, (255, 0, 0))  # Red color for red players
-#             game.screen.blit(text, (10, i*40))  # Adjust the position as needed
-
-#         # Update and draw player lines and names for green players
-#         for i, player in enumerate(game.green_players):
-#             game.green_lines[i].setPlayer(player)
-#             game.green_lines[i].draw(game.screen)
-#             text = font.render(player, True, (0, 255, 0))  # Green color for green players
-#             game.screen.blit(text, (game.X - 100, i*40))  # Adjust the position as needed
-
-#         # Draw input boxes
-#         for box in game.input_boxes:
-#             box.draw(game.screen)
-        # Draw buttons
-
-# pass in the game object from 
+def displayScore(screen, redTeam, greenTeam):
+    # Initializing Color
+    red = (128, 23, 23)
+    green = (17, 122, 13)
+    X = int(screen.get_width())
+    Y = int(screen.get_height())
+    
+    # Fill the screen with colors
+    
+    yStart = 50
+    redTotalPts = 0
+    greenTotalPts = 0
+    for x in redTeam:
+        name = x.get('name')
+        textBox(screen, name, "white", 150, yStart, red)
+        textBox(screen, str(0), "white", X/2 -100, yStart, red)
+        redTotalPts = redTotalPts + 0
+        yStart += 30
+    yStart = 50
+    for x in greenTeam:
+        name = x.get('name')
+        textBox(screen, name, "white", X//2+150, yStart, green)
+        textBox(screen, str(0), "white", X -100, yStart, green)
+        greenTotalPts = greenTotalPts + 0
+        yStart += 30
+    textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
+    textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
+    return
+def timerDisplay(currentTime, startTime, screen):
+    left = 360 - (currentTime-startTime)
+    min = int(left//60)
+    sec = int(left%60)
+    secStr = str(sec)
+    if (sec < 10):
+        secStr = "0" + secStr
+    timer = str(min) + ":" + secStr
+    textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
+def countdownHelper():
+    countdown()
 def runGame(redTeam,greenTeam):
+    countdownHelper()
     running = True
     pygame.init()
     desktop = pygame.display.Info()
@@ -99,29 +87,11 @@ def runGame(redTeam,greenTeam):
     top_left_rect = pygame.Rect(0, 0, X // 2, Y // 2)
     top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
 
-    # Create text boxes for code names and game scores
-    
-    # Divide each rectangle into a 15 row by 2 column grid
-    row_height = top_left_rect.height // 15
-    column_width = top_left_rect.width // 2
-
-
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
-    # ~ Music ~
-    tracks = os.listdir('resources/photon_tracks')
-
-    # Select a random track
-    track = random.choice(tracks)
-    
-
-    # Load and play the track
-    pygame.mixer.music.load(os.path.join('resources/photon_tracks', track))
-    pygame.mixer.music.play(-1)  # -1 means loop indefinitely
-
     # Create text box for game events
-
+    countdown = time.time()
     while running:
 
         for event in pygame.event.get():
@@ -140,31 +110,13 @@ def runGame(redTeam,greenTeam):
                     # Quit the game
                     pygame.quit()
                     sys.exit()
-
-
-        # Fill the screen with colors
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
-        yStart = 50
-        for x in redTeam:
-            name = x.get('name')
-            textBox(screen, name, "white", 100, yStart, red)
-            yStart += 30
-        yStart = 50
-        for x in greenTeam:
-            name = x.get('name')
-            textBox(screen, name, "white", X//2+100, yStart, green)
-            yStart += 30
-
-        #render(game)
-
-        
-
+        displayScore(screen, redTeam, greenTeam)
+        if ( time.time() - countdown >= 360):
+            running = False
+            return
+        timerDisplay(time.time(), countdown, screen)
         pygame.display.flip()
-        
         clock.tick(60)
-
-
-
-#runGame()
