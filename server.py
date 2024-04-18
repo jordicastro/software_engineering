@@ -78,27 +78,27 @@ class Server():
             if equip_id % 2 == 0:
                 print(f'[GREEN BASE HIT] [FRIENDLY FIRE] {hit_id} hit by {equip_id}')
             else:
-                self.update_points(equip_id, 100)
+                self.update_points(equip_id, hit_id, 100)
                 message = f'{hit_id}'
         elif hit_id == '53':
             if equip_id % 2 != 0:  
                 print(f'[RED BASE HIT] [FRIENDLY FIRE] hit by {equip_id}')
                 message = f'{hit_id}'
             else:
-                self.update_points(equip_id, 100)
+                self.update_points(equip_id, hit_id, 100)
                 message = f'{hit_id}'
         
         # Player got hit
         elif (equip_id + hit_id) % 2 == 0:
             # friendly fire, both players get deactivated
             print(f'[FRIENDLY FIRE] transmitting self id')
-            self.update_points(equip_id, -10)
+            self.update_points(equip_id, hit_id, -10)
             message = f'{equip_id}'
             print(f'\t[SENDING IDs] Sending message {message} to Server')
             self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
             message = f'{hit_id}'
         else:
-            self.update_points(equip_id, 10)
+            self.update_points(equip_id, hit_id, 10)
             message = f'{hit_id}'
             
         if message != '':
@@ -106,10 +106,14 @@ class Server():
             self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
 
     # This can be used to update the points of the player in the server
-    def update_points(self, equip_id, points, prev_seg):
+    def update_points(self, equip_id, hit_id, points):
         print('[UPDATING POINTS] updating points...')
         print(f'\t[POINTS] player {equip_id} got {points} points')
         
-        up_dict = dict(equip_id, points)
+        up_dict = {"equip_id" : equip_id, "hit_id" : hit_id, "points" : points}
         self.up_arr.append(up_dict)
+    
+    # This is the function called by the game to read new points
+    def points_to_game(self, prev_seg):
+        print('[GAME CALLING FOR POINTS] sending points to game...')
         return self.up_arr[prev_seg:]
