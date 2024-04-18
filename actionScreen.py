@@ -1,5 +1,10 @@
 import pygame, sys, time
+from main import server
 from countdown import countdown
+
+lastTime = 0
+initialTime = 0
+lastUpdate = 0
 
 # Main game loop
 def events():
@@ -71,19 +76,41 @@ def countdownHelper():
 def getUpdates():
     # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
     # who calls actionScreen.py? game file can have a function that calls this function
+    msg_array = []
+    msg = ''
+
+    # Check if there are updates from the server
+    updateArray = server.points_to_game(lastUpdate)
+    lastUpdate = lastUpdate + len(updateArray)
+    # parse the updateArray
+    for update in updateArray:
+        equip_id = update.get('equip_id')
+        hit_id = update.get('hit_id')
+        points = update.get('points')
+        msg = f'player {equip_id}'
+        # conditions
+        if points == 10:
+            # player hit another player
+            msg = msg + ' hit player ' + hit_id
+            pass
+        elif points == -10:
+            # player hit friendly
+            msg = msg + ' hit friendly ' + hit_id
+            pass
+        elif points == 100:
+            # player hit opponent base
+            msg = msg + ' hit opponent base'
+
+        msg_array.append(msg)
 
 
-    if time - startTime >= 1000:
-        # Check if there are updates from the server
-        updateArray = server.points_to_game(lastUpdate)
-        lastUpdate = lastUpdate + len(updateArray)
-        # parse the updateArray
-        for update in updateArray:
-            equip_id = update.get('equip_id')
-            hit_id = update.get('hit_id')
-            points = update.get('points')
-            # Update the screen 
-                # callable function that takes in each update and updates the screen
+
+        # function pass in equip_id -> find player name
+
+        # Update the screen 
+            # callable function that takes in each update and updates the screen
+def updateScreen(msg_array):
+    pass
 
 def runGame(redTeam,greenTeam):
     countdownHelper()
@@ -129,9 +156,12 @@ def runGame(redTeam,greenTeam):
                     pygame.quit()
                     sys.exit()
 
-        if (time.time() - lastTime) >= 1:
-            getUpdates()
+        if (time.time() - lastTime) >= 1000:
+            msg_array = getUpdates()
             lastTime = time.time()
+            # Update the screen with the new messages
+            updateScreen(msg_array)
+
             
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
