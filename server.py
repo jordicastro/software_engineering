@@ -113,3 +113,5 @@ class Server():
         up_dict = dict(equip_id, points)
         self.up_arr.append(up_dict)
         return self.up_arr[prev_seg:]
+
+# This is a test commit
