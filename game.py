@@ -83,7 +83,7 @@ class Game:
             box.draw(self.screen)
         # Draw buttons
         for button in self.buttons:
-            button.draw(self.screen)
+            button.process(self.screen)
 
     # Render title
     def title(self):
@@ -173,7 +173,7 @@ class Game:
         print("Starting game")
         print(self.red_players)
         print(self.green_players)
-        runGame(self.red_players,self.green_players)
+        runGame(self.red_players,self.green_players, self.server)
 
     def clearBoxes(self):
         for box in self.input_boxes:

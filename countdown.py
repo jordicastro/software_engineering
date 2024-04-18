@@ -1,5 +1,6 @@
 # importing required library
 import pygame,time, sys, os, random
+from server import Server
 
 os.environ['SDL_VIDEO_CENTERED'] = '1' 
 
@@ -22,7 +23,7 @@ def events():
                 pygame.quit()
                 sys.exit()
 
-def countdown():
+def countdown(server: Server):
     # activate the pygame library .
     pygame.init()
 
@@ -72,3 +73,5 @@ def countdown():
             pygame.mixer.music.play(-1)  # -1 means loop indefinitely
 
         i = i-1
+
+    server.start_traffic()

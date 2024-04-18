@@ -72,13 +72,15 @@ class Server():
    ## This can be used to send the hit id to the server
    # Calls update_points to update the points of the player in the server
    # Player is only deactivated if they are hit by an enemy
-    def send_hit_id(self, equip_id, hit_id):
+    def send_hit_id(self, equip_id_str, hit_id_str):
        # Next bit assumes:
        # - 43 is Green Base
        # - 53 is Red Base
        # - Even equip_id is Green
        # - Odd equip_id is Red
        message = ''
+       equip_id = int(equip_id_str)
+       hit_id = int(hit_id_str)
        
        # Base got hit
        if hit_id == '43':
