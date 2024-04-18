@@ -13,4 +13,4 @@ class Player:
 
     # Helper for encoding player data to json for database
     def encode(self):
-        return {'player_id': self.player_id, 'name': self.name}
+        return {'player_id': self.player_id, 'name': self.name, 'equip_id': self.equip_id, 'team': self.team, 'score': self.score}
