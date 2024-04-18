@@ -1,4 +1,6 @@
 import pygame as pg
+from player import Player
+
 pg.init()
 COLOR_INACTIVE = pg.Color('black')
 COLOR_ACTIVE = pg.Color('white')
@@ -68,7 +70,7 @@ class InputLine:
     def __init__(self, x, y, w, h, text=''):
         self.id = InputBox(x, y, w, h)
         self.name = InputBox(x+w, y, w, h)
-        self.inputLine = [self.id, self.name]
+        self.input_line = [self.id, self.name]
     def getIDBox(self):
         return self.id
     def getNameBox(self):
@@ -81,9 +83,9 @@ class InputLine:
         self.id.text = str(text)
     def setName(self, text):
         self.name.text = text
-    def setPlayer(self, player_data):
-        self.id.text = str(player_data['player_id'])
-        self.name.text = player_data['name']
+    def setPlayer(self, player_data: Player):
+        self.id.text = str(player_data.player_id)
+        self.name.text = player_data.name
     def clear(self):
         self.id.clear()
         self.name.clear()

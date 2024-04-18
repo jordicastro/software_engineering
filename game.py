@@ -1,13 +1,15 @@
+from database import Database
 from server import Server
+from player import Player
 from splash import splashScreen
-from gui import *
+from gui import InputBox, InputLine, Button
 from actionScreen import runGame
 import pygame, sys
 
 # Game class
 class Game:
     # Initialize game
-    def __init__(self, db, server):
+    def __init__(self, db: Database, server: Server):
         # Window setup
         self.db = db
         self.server = server
@@ -18,20 +20,22 @@ class Game:
         self.X = int(self.screen.get_width())
         self.Y = int(self.screen.get_height())
         # Variable creation
-        self.red_players = []
-        self.green_players = []
-        self.red_lines = []
-        self.green_lines = []
-        self.input_boxes = []
-        self.buttons = []
+        self.red_players: list[Player] = []
+        self.green_players: list[Player] = []
+        self.red_lines: list[InputLine] = []
+        self.green_lines: list[InputLine] = []
+        self.input_boxes: list[InputBox] = []
+        self.buttons: list[Button] = []
+        self.running: bool = True
+        self.adding: bool = False
 
     # Handling events function
     def events(self):
         for event in pygame.event.get():
             # Handle events for each player line and input box
-            for i, line in enumerate(self.red_lines + self.green_lines):
+            for line in self.red_lines + self.green_lines:
                 line.handle_event(event)
-            for i, input in enumerate(self.input_boxes):
+            for input in self.input_boxes:
                 input.handle_event(event)
             # If pygame quits, close the database and exit the program
             if event.type == pygame.QUIT:
@@ -54,6 +58,8 @@ class Game:
                 if event.key == pygame.K_F12:
                     self.red_players = []
                     self.green_players = []
+                    for line in self.red_lines + self.green_lines:
+                        line.clear()
                 if event.key == pygame.K_F5:
                     self.onStartHelper()
 
@@ -61,18 +67,19 @@ class Game:
     def render(self):
         # Render background
         self.background()
-        # Update player lines
-        for player in self.red_players:
-            self.red_lines[self.red_players.index(player)].setPlayer(player)
-        for player in self.green_players:
-            self.green_lines[self.green_players.index(player)].setPlayer(player)
         # Draw player lines
-        for line in self.red_lines:
+        for i, line in enumerate(self.red_lines):
+            if i < len(self.red_players):
+                line.setPlayer(self.red_players[i])
             line.draw(self.screen)
-        for line in self.green_lines:
+        for i, line in enumerate(self.green_lines):
+            if i < len(self.green_players):
+                line.setPlayer(self.green_players[i])
             line.draw(self.screen)
         # Draw input boxes
-        for box in self.input_boxes:
+        for i, box in enumerate(self.input_boxes):
+            if i == 2 and not self.adding:
+                continue
             box.draw(self.screen)
         # Draw buttons
         for button in self.buttons:
@@ -121,7 +128,8 @@ class Game:
         # Labels for inputs
         self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
         self.textBox("Equipment ID:", 20, "white", self.X/2-100-100, self.Y/2+50+40+75, (128,23,23))
-        self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2+100+40+75, (128,23,23))
+        if self.adding:
+            self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
 
     # Initialize player lines
     def initPlayerLines(self, num_boxes):
@@ -134,36 +142,45 @@ class Game:
             self.red_lines.append(InputLine(self.X/2-100-400, i, 200, height))
             self.green_lines.append(InputLine(self.X/2+100, i, 200, height))
 
-    # Encode player data to json
-    def encodePlayer(self, player_id, name, equip_id):
-        return {'player_id': int(player_id), 'name': name, 'equip_id': int(equip_id)}
-
     # Add player to game
-    def addPlayer(self, player_id, equip_id):
-        ret = self.db.select(player_id)
-        self.server.send_id(equip_id)
-        if equip_id % 2 != 0:
-            self.red_players.append(ret)
+    def addPlayer(self, player: Player):
+        ret = self.db.select(player.player_id)
+        self.server.send_id(player.equip_id)
+        self.adding = False
+        adding_player = Player(player.player_id, ret['name'], player.equip_id, 0)
+        if player.team:
+            self.red_players.append(adding_player)
+            self.red_lines[len(self.red_players) - 1].setPlayer(adding_player)
         else:
-            self.green_players.append(ret)
+            self.green_players.append(adding_player)
+            self.green_lines[len(self.green_players) - 1].setPlayer(adding_player)
+        self.clearBoxes()
 
     # Create player in database
-    def createPlayer(self, player_id, name, equip_id):
-        ret = self.db.insert(player_id, name)
+    def createPlayer(self, player: Player):
+        if player.player_id == '' or player.name == '' or player.equip_id == '':
+            self.adding = True
+            return False
+
+        ret = self.db.insert(player.player_id, player.name)
         if ret:
-            self.addPlayer(player_id, equip_id)
+            self.addPlayer(player)
         else:
             print("Error creating player")
         return ret
+
     def onStartHelper(self):
         print("Starting game")
         print(self.red_players)
         print(self.green_players)
         runGame(self.red_players,self.green_players)
+
+    def clearBoxes(self):
+        for box in self.input_boxes:
+            box.clear()
+
     # Run main game
     def run(self):
-        self.running = True
-
         # Splash screen
         splashScreen()
 
@@ -178,25 +195,35 @@ class Game:
         self.initPlayerLines(15)
 
         # Create input boxes
-        nameField = InputBox(X/2-105, Y/2+100+75, 200, 32, True)
-        self.input_boxes.append(nameField)
-        equipmentField = InputBox(X/2-105, Y/2+50+75, 200, 32, True)
-        self.input_boxes.append(equipmentField)
-        idField = InputBox(X/2-105, Y/2+75, 200, 32, True)
-        self.input_boxes.append(idField)
+        self.id_field = InputBox(X/2-105, Y/2+100+75, 200, 32, True)
+        self.input_boxes.append(self.id_field)
+        self.equipment_field = InputBox(X/2-105, Y/2+50+75, 200, 32, True)
+        self.input_boxes.append(self.equipment_field)
+        self.name_field = InputBox(X/2-105, Y/2+75, 200, 32, True)
+        self.input_boxes.append(self.name_field)
 
         # Check if player exists in database and decide whether to add or create player
         def checkPlayer():
             # Encode player data
-            player = self.encodePlayer(idField.text, nameField.text, equipmentField.text)
+            player = Player(int(self.id_field.text), self.name_field.text, int(self.equipment_field.text), 0)
+            # Check if player or equipment already exists in game
+            for existing in self.red_players + self.green_players:
+                if existing.player_id == player.player_id:
+                    print("Player already exists in game")
+                    self.clearBoxes()
+                    return
+                if existing.equip_id == player.equip_id:
+                    print("Equipment already exists in game")
+                    self.clearBoxes()
+                    return
             # Check if player exists in database
-            ret = self.db.check_id(player['player_id'])
+            ret = self.db.check_id(player.player_id)
             if ret:
                 # If player is found, add player to game
-                self.addPlayer(player["player_id"], player["equip_id"])
+                self.addPlayer(player)
             else:
                 # If not found, create player in database and then add to game
-                self.createPlayer(player["player_id"], player["name"], player["equip_id"])
+                self.createPlayer(player)
 
         # Start game
         def onStart():
