@@ -114,13 +114,13 @@ class Server():
             self.server_broadcast.sendto(message.encode(FORMAT), BROADCAST_ADDR)
 
     # This can be used to update the points of the player in the server
-    def update_points(self, equip_id, hit_id, points):
+    def update_points(self, equip_id: int, hit_id: int, points):
         print('[UPDATING POINTS] updating points...')
         print(f'\t[POINTS] player {equip_id} got {points} points')
-        
+
         up_dict = {"equip_id" : equip_id, "hit_id" : hit_id, "points" : points}
         self.up_arr.append(up_dict)
-    
+
     # This is the function called by the game to read new points
     def points_to_game(self, prev_seg):
         print('[GAME CALLING FOR POINTS] sending points to game...')
