@@ -126,7 +126,7 @@ class Game:
         self.textBox("Name", 32, "white", redX+redW-100-100, redY+30, RED)
         self.textBox("Name", 32, "white", greenX+greenW-100-100, greenY+30, GREEN)
         # Labels for inputs
-        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2+100+40+75, (128,23,23))
+        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
         self.textBox("Equipment ID:", 20, "white", self.X/2-100-100, self.Y/2+50+40+75, (128,23,23))
         if self.adding:
             self.textBox("Name:", 20, "white",  self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
@@ -173,7 +173,7 @@ class Game:
         print("Starting game")
         print(self.red_players)
         print(self.green_players)
-        runGame(self.red_players,self.green_players)
+        runGame(self.red_players,self.green_players, self.server)
 
     def clearBoxes(self):
         for box in self.input_boxes:
