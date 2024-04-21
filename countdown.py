@@ -1,5 +1,6 @@
 # importing required library
-import pygame,time, sys, os
+import pygame,time, sys, os, random
+from server import Server
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -22,7 +23,7 @@ def events():
                 pygame.quit()
                 sys.exit()
 
-def countdown():
+def countdown(server: Server):
     # activate the pygame library .
     pygame.init()
 
@@ -59,4 +60,18 @@ def countdown():
         screen.blit(timerNum, (timerNumWidth, timerNumHeight))
         pygame.display.flip()
         clock.tick(1)
+        if(i == 16):
+            # ~ Music ~
+            tracks = os.listdir('resources/photon_tracks')
+
+            # Select a random track
+            track = random.choice(tracks)
+    
+
+            # Load and play the track
+            pygame.mixer.music.load(os.path.join('resources/photon_tracks', track))
+            pygame.mixer.music.play()
+
         i = i-1
+
+    server.start_traffic()

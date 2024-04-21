@@ -6,7 +6,8 @@ pg.init()
 COLOR_INACTIVE = pg.Color('black')
 COLOR_ACTIVE = pg.Color('white')
 FONT = pg.font.Font(None, 32)
-
+BUTTON_HOVER_COLOR = '#666666'
+BUTTON_COLOR = '#ffffff'
 # User input box
 class InputBox:
     def __init__(self, x: int, y: int, w: int, h: int, edit: bool = False, text: str = ''):
