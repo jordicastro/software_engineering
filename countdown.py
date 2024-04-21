@@ -70,7 +70,7 @@ def countdown(server: Server):
 
             # Load and play the track
             pygame.mixer.music.load(os.path.join('resources/photon_tracks', track))
-            pygame.mixer.music.play(-1)  # -1 means loop indefinitely
+            pygame.mixer.music.play()
 
         i = i-1
 
