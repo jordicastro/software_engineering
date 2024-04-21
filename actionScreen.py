@@ -29,9 +29,7 @@ def textBox(screen, input, color, x, y, bg):
     textRect = text.get_rect()
     textRect.bottomleft = (x, y)
     return screen.blit(text, textRect)
-def baseHitDisplay(screen, team): 
-    if (team == "green"):
-        textBox(screen, "B", "white", x, y, bg)
+
 def displayScore(screen, redTeam, greenTeam):
     # Initializing Color
     red = (128, 23, 23)
@@ -139,15 +137,11 @@ def runGame(redTeam,greenTeam, server):
     top_left_rect = pygame.Rect(0, 0, X // 2, Y // 2)
     top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
 
-    
-
-
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
-    
     # Create text box for game events
-
+    countdown = time.time()
     while running:
 
         for event in pygame.event.get():
