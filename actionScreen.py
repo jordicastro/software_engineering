@@ -78,7 +78,6 @@ def timerDisplay(currentTime, startTime, screen):
         secStr = "0" + secStr
     timer = str(min) + ":" + secStr
     textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
-    
 def countdownHelper(server):
     countdown(server)
 
