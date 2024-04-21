@@ -1,8 +1,9 @@
 import pygame, sys, time
 from countdown import countdown
 from player import Player
+from textScroll import TextScroll
 
-
+GLOBALTEXT = "This is a really long \n test that I want to try to see \n if this works or not becuase I'm not sure if it will but yeah test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n"
 # Main game loop
 def events():
     # Check for events
@@ -48,7 +49,7 @@ def displayScore(screen, redTeam, greenTeam):
         pts = redPlayer.score
         textBox(screen, str(name), "white", 150, yStart, red)
         textBox(screen, str(pts), "white", X/2 -100, yStart, red)
-        redTotalPts = redTotalPts + 0
+        redTotalPts = redTotalPts + pts
         yStart += 30
     yStart = 50
     for x in greenTeam:
@@ -57,7 +58,7 @@ def displayScore(screen, redTeam, greenTeam):
         pts = greenPlayer.score
         textBox(screen, name, "white", X//2+150, yStart, green)
         textBox(screen, str(pts), "white", X -100, yStart, green)
-        greenTotalPts = greenTotalPts + 0
+        greenTotalPts = greenTotalPts + pts
         yStart += 30
     textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
     textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
@@ -103,7 +104,6 @@ def getUpdates(server, lastUpdate):
         elif points == 100:
             # player hit opponent base
             msg = msg + ' hit opponent base'
-
         msg_array.append(msg)
 
 
@@ -144,6 +144,20 @@ def runGame(redTeam,greenTeam, server):
     # Create bottom half section
     bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
 
+    
+    
+    # trying messages
+    font = pygame.font.SysFont("Liberation Sans", 30)
+    area = pygame.Rect(20, Y//2 + 50, X-40, Y//2 - 150)
+    box = area.inflate(2, 2)
+    pygame.draw.rect(screen, "blue", box, 1)
+    
+    pygame.time.delay(500)
+    message = TextScroll(area, font, "white", "black", GLOBALTEXT, ms_per_line=5)
+        
+
+    screen.fill((0, 0, 0), bottom_rect)
+    
     # Create text box for game events
     countdown = time.time()
     while running:
@@ -171,11 +185,21 @@ def runGame(redTeam,greenTeam, server):
             # Update the screen with the new messages
             updateScreen(msg_array)
 
-            
+        
+        
+        
+        
+        
+        
         screen.fill(red, top_left_rect)
         screen.fill(green, top_right_rect)
-        screen.fill((0, 0, 0), bottom_rect)
+        
         displayScore(screen, redTeam, greenTeam)
+        
+        # trying to update messages
+        message.update()
+        message.draw(screen)
+        
         if ( time.time() - countdown >= 360):
             running = False
             return
