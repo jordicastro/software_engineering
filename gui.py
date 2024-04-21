@@ -5,7 +5,8 @@ pg.init()
 COLOR_INACTIVE = pg.Color('black')
 COLOR_ACTIVE = pg.Color('white')
 FONT = pg.font.Font(None, 32)
-
+BUTTON_HOVER_COLOR = '#666666'
+BUTTON_COLOR = '#ffffff'
 # User input box
 class InputBox:
     def __init__(self, x, y, w, h, edit=False, text=''):
@@ -121,7 +122,7 @@ class Button():
     def setText(self, text):
         self.text = text
         self.buttonSurf = FONT.render(text, True, (20, 20, 20))
-    def process(self, screen):
+    def draw(self, screen):
         mousePos = pg.mouse.get_pos()
         self.buttonSurface.fill(self.fillColors['normal'])
         if self.buttonRect.collidepoint(mousePos):

@@ -83,7 +83,7 @@ class Game:
             box.draw(self.screen)
         # Draw buttons
         for button in self.buttons:
-            button.process(self.screen)
+            button.draw(self.screen)
 
     # Render title
     def title(self):
@@ -126,6 +126,7 @@ class Game:
         self.textBox("Name", 32, "white", redX+redW-100-100, redY+30, RED)
         self.textBox("Name", 32, "white", greenX+greenW-100-100, greenY+30, GREEN)
         # Labels for inputs
+        self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
         self.textBox("Player ID:", 20, "white", self.X/2-100-100, self.Y/2 + 40+75, (128,23,23))
         self.textBox("Equipment ID:", 20, "white", self.X/2-100-100, self.Y/2+50+40+75, (128,23,23))
         if self.adding:

@@ -67,6 +67,7 @@ def timerDisplay(currentTime, startTime, screen):
         secStr = "0" + secStr
     timer = str(min) + ":" + secStr
     textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
+<<<<<<< HEAD
 def countdownHelper(server):
     
     countdown(server)
@@ -119,6 +120,12 @@ def runGame(redTeam,greenTeam, server):
     lastUpdate = 0
 
     countdownHelper(server)
+=======
+def countdownHelper():
+    countdown()
+def runGame(redTeam,greenTeam):
+    countdownHelper()
+>>>>>>> russell
     running = True
     pygame.init()
     desktop = pygame.display.Info()
@@ -172,7 +179,10 @@ def runGame(redTeam,greenTeam, server):
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
         displayScore(screen, redTeam, greenTeam)
+<<<<<<< HEAD
         pygame.display.flip()
+=======
+>>>>>>> russell
         if ( time.time() - countdown >= 360):
             running = False
             return
