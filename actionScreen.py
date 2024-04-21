@@ -1,6 +1,6 @@
 import pygame, sys, time
 from countdown import countdown
-
+from player import Player
 
 
 # Main game loop
@@ -43,16 +43,20 @@ def displayScore(screen, redTeam, greenTeam):
     redTotalPts = 0
     greenTotalPts = 0
     for x in redTeam:
-        name = x.get('name')
-        textBox(screen, name, "white", 150, yStart, red)
-        textBox(screen, str(0), "white", X/2 -100, yStart, red)
+        redPlayer: Player = x
+        name = redPlayer.name
+        pts = redPlayer.score
+        textBox(screen, str(name), "white", 150, yStart, red)
+        textBox(screen, str(pts), "white", X/2 -100, yStart, red)
         redTotalPts = redTotalPts + 0
         yStart += 30
     yStart = 50
     for x in greenTeam:
-        name = x.get('name')
+        greenPlayer: Player = x
+        name = greenPlayer.name
+        pts = greenPlayer.score
         textBox(screen, name, "white", X//2+150, yStart, green)
-        textBox(screen, str(0), "white", X -100, yStart, green)
+        textBox(screen, str(pts), "white", X -100, yStart, green)
         greenTotalPts = greenTotalPts + 0
         yStart += 30
     textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
@@ -172,7 +176,6 @@ def runGame(redTeam,greenTeam, server):
         screen.fill(green, top_right_rect)
         screen.fill((0, 0, 0), bottom_rect)
         displayScore(screen, redTeam, greenTeam)
-        pygame.display.flip()
         if ( time.time() - countdown >= 360):
             running = False
             return
