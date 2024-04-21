@@ -39,30 +39,36 @@ def displayScore(screen, redTeam, greenTeam):
     Y = int(screen.get_height())
     
     # Fill the screen with colors
-    
     yStart = 50
     redTotalPts = 0
     greenTotalPts = 0
-    for x in redTeam:
-        redPlayer: Player = x
-        name = redPlayer.name
-        pts = redPlayer.score
+
+    #reorder the list by highest score to lowest
+    redTeam.sort(key=lambda x: x.score, reverse =True)
+    greenTeam.sort(key=lambda x: x.score, reverse =True)
+
+    #print scores
+    for player in redTeam:
+        name = player.name
+        pts = player.score
         textBox(screen, str(name), "white", 150, yStart, red)
         textBox(screen, str(pts), "white", X/2 -100, yStart, red)
         redTotalPts = redTotalPts + pts
         yStart += 30
     yStart = 50
-    for x in greenTeam:
-        greenPlayer: Player = x
-        name = greenPlayer.name
-        pts = greenPlayer.score
+    for player in greenTeam:
+        name = player.name
+        pts = player.score
         textBox(screen, name, "white", X//2+150, yStart, green)
         textBox(screen, str(pts), "white", X -100, yStart, green)
         greenTotalPts = greenTotalPts + pts
         yStart += 30
+
+    #print the total score for each team
     textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
     textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
     return
+
 def timerDisplay(currentTime, startTime, screen):
     left = 360 - (currentTime-startTime)
     min = int(left//60)
@@ -72,8 +78,8 @@ def timerDisplay(currentTime, startTime, screen):
         secStr = "0" + secStr
     timer = str(min) + ":" + secStr
     textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
-def countdownHelper(server):
     
+def countdownHelper(server):
     countdown(server)
 
 def getUpdates(server, lastUpdate):
@@ -106,7 +112,7 @@ def getUpdates(server, lastUpdate):
             msg = msg + ' hit opponent base'
         msg_array.append(msg)
 
-
+    print(msg_array)
     return msg_array
         # function pass in equip_id -> find player name
 
