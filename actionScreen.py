@@ -18,9 +18,12 @@ class ActionScreen:
         self.countdown = time.time()
         self.message = TextScroll(pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150), pygame.font.SysFont("Liberation Sans", 30), "white", "black", [], ms_per_line=5)
         self.last_time: int = 0
+        self.last_blank_time: int = 0
         self.last_update: int = 0
         self.msg_array: list[str] = []
         self.quit = quit
+        self.base_hitters: list[Player] = []
+        self.blanking: bool = False
 
     # Render text box
     def textBox(self, input, color, x, y, bg):
@@ -56,25 +59,55 @@ class ActionScreen:
         self.green_players.sort(key=lambda x: x.score, reverse=True)
 
         # print the player name and score for each team
-        for player in self.red_players:
+        for i, player in enumerate(self.red_players):
             name = player.name
             pts = player.score
+            if player in self.base_hitters:
+                name = name + " HIT BASE"
+            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
+                name = " "
+                self.blanking = False
+            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
+                self.blanking = True
             self.textBox(str(name), "white", 150, yStart, red)
             self.textBox(str(pts), "white", self.X/2 -100, yStart, red)
             redTotalPts = redTotalPts + pts
             yStart += 30
         yStart = 50
-        for player in self.green_players:
+        for i, player in enumerate(self.green_players):
             name = player.name
             pts = player.score
+            if player in self.base_hitters:
+                name = name + " HIT BASE"
+            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
+                name = " "
+                self.blanking = False
+            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
+                self.blanking = True
             self.textBox(name, "white", self.X//2+150, yStart, green)
             self.textBox(str(pts), "white", self.X -100, yStart, green)
             greenTotalPts = greenTotalPts + pts
             yStart += 30
 
         # print the total score for each team
-        self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
-        self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
+        if redTotalPts > greenTotalPts and self.blanking:
+            self.textBox(str(redTotalPts), red, self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
+                self.blanking = False
+                self.last_blank_time = time.time()
+        elif greenTotalPts > redTotalPts and self.blanking:
+            self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), green, self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
+                self.blanking = False
+                self.last_blank_time = time.time()
+        else:
+            self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) != 0 and not self.blanking:
+                self.blanking = True
+                self.last_blank_time = time.time()
 
     def timerDisplay(self, currentTime, startTime):
         left = 360 - (currentTime-startTime)
@@ -101,20 +134,22 @@ class ActionScreen:
             for player in self.red_players + self.green_players:
                 if player.equip_id == equip_id:
                     player.score += int(points)
-                    name = player.name
-                if player.equip_id == hit_id:
-                    hit_name = player.name
+                    shooting_player = player
+                elif player.equip_id == hit_id:
+                    shot_player = player
             # conditions
             msg = ''
             if points == 10:
                 # player hit another player
-                msg = f'{name} hit {hit_name}'
+                msg = f'{shooting_player.name} hit {shot_player.name}'
             elif points == -10:
                 # player hit friendly
-                msg = f'{name} hit friendly {hit_name}'
+                msg = f'{shooting_player.name} hit friendly {shot_player.name}'
             elif points == 100:
                 # player hit opponent base
-                msg = f'{name} hit opponent base'
+                self.base_hitters.append(shooting_player)
+                msg = f'{shooting_player.name} hit '
+                msg += 'Red base' if hit_id == 53 else 'Green base'
             if msg != '':
                 new_msg_array.append(str(msg))
         return new_msg_array
@@ -145,7 +180,5 @@ class ActionScreen:
         # trying messages
         box = pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150).inflate(2, 2)
         pygame.draw.rect(self.screen, "blue", box, 1)
-
-        pygame.time.delay(500)
 
         self.screen.fill("black", bottom_rect)
