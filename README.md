@@ -1,10 +1,9 @@
 # software_engineering
 
 five person team, weekly sprints
-test
 
 Team Number: 19
-| Name                | Github       |
+| Name                | GitHub       |
 |---------------------|--------------|
 | Ethan Potts         | empotts      |
 | Ogden Wells         | BatSmacker84 |
@@ -16,37 +15,16 @@ Team Number: 19
 
 1. Clone the repository and navigate to the project directory:
 
-   ```sh
-    git clone https://github.com/jordicastro/software_engineering.git
-    cd software_engineering
-    ```
-
-2. Run the main script:
-
-   ```sh
-   python main.py
-   ```
-
-3. If you want to test the supabase integration
-
-   ```sh
-   python database.py
-   ```
-
-## How to set up the development environment
-
-1. Clone the repository and navigate to the project directory:
-
-   ```sh
+   ```bash
     git clone https://github.com/jordicastro/software_engineering.git
     cd software_engineering
     ```
 
 2. Create a python virtual environment:
 
-   **Linux/MacOS**
+   **Linux/macOS**
 
-    ```sh
+    ```bash
     python3 -m venv venv
     ```
 
@@ -58,9 +36,9 @@ Team Number: 19
 
 3. Activate the virtual environment:
 
-   **Linux/MacOS**
+   **Linux/macOS**
 
-    ```sh
+    ```bash
     source venv/bin/activate
     ```
 
@@ -72,7 +50,7 @@ Team Number: 19
 
 4. Install the required python packages:
 
-    ```sh
+    ```bash
     pip install -r requirements.txt
     ```
 
@@ -80,14 +58,16 @@ Team Number: 19
 
 1. Run ```main.py```
 
-2. Press ```KEY``` to add players
+2. Enter players by inputting their player_id and equipment_id into the respective fields and pressing the ```Add Player``` button.
 
-2. Press ```F12``` to clear all players
+3. If the player does not exist in the database, a name field will appear. Enter the player's name and press the ```Add Player``` button again.
 
-3. Once all players have been added, press ```F5``` to start the game
+4. Press ```F12``` to clear all players
 
-4. The game will take 6 minutes
+5. Once all players have been added, press the ```Start``` button to start the game
 
-5. Check the display window to see updates for which team is winning
+6. The game will take 6 minutes
 
-6. When the game is completer, return to the home base to see which team wins!
+7. Check the display window to see updates for which team is winning
+
+8. When the game is completed, return to the home base to see which team wins!

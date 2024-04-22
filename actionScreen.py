@@ -1,213 +1,184 @@
 import pygame, sys, time
-from countdown import countdown
 from player import Player
+from server import Server
+from database import Database
 from textScroll import TextScroll
+from typing import Callable
 
-GLOBALTEXT = "This is a really long \n test that I want to try to see \n if this works or not becuase I'm not sure if it will but yeah test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n test \n"
-# Main game loop
-def events():
-    # Check for events
-    for event in pygame.event.get():
-        # Check for the quit event
-        if event.type == pygame.QUIT:
-            # Quit the game
-            pygame.quit()
-            sys.exit()
-        # Check for the fullscreen toggle event
-        if event.type == pygame.KEYDOWN:
-            # Toggle fullscreen mode
-            if event.key == pygame.K_F11:
-                pygame.display.toggle_fullscreen()
-            # Check for the quit event
-            if event.key == pygame.K_ESCAPE:
-                # Quit the game
-                pygame.quit()
-                sys.exit()
-# Render text box
-def textBox(screen, input, color, x, y, bg):
-    font = pygame.font.Font('freesansbold.ttf', 32)
-    text = font.render(input, True, (color), (bg))
-    textRect = text.get_rect()
-    textRect.bottomleft = (x, y)
-    return screen.blit(text, textRect)
+class ActionScreen:
+    def __init__(self, screen: pygame.Surface, db: Database, server: Server, red_players: list[Player], green_players: list[Player], quit: Callable):
+        self.db = db
+        self.server = server
+        pygame.init()
+        self.screen = screen
+        self.X = int(self.screen.get_width())
+        self.Y = int(self.screen.get_height())
+        self.red_players = red_players
+        self.green_players = green_players
+        self.countdown = time.time()
+        self.message = TextScroll(pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150), pygame.font.SysFont("Liberation Sans", 30), "white", "black", [], ms_per_line=5)
+        self.last_time: int = 0
+        self.last_blank_time: int = 0
+        self.last_update: int = 0
+        self.msg_array: list[str] = []
+        self.quit = quit
+        self.base_hitters: list[Player] = []
+        self.blanking: bool = False
 
-def displayScore(screen, redTeam, greenTeam):
-    # Initializing Color
-    red = (128, 23, 23)
-    green = (17, 122, 13)
-    X = int(screen.get_width())
-    Y = int(screen.get_height())
-    
-    # Fill the screen with colors
-    yStart = 50
-    redTotalPts = 0
-    greenTotalPts = 0
+    # Render text box
+    def textBox(self, input, color, x, y, bg):
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render(input, True, (color), (bg))
+        textRect = text.get_rect()
+        textRect.bottomleft = (x, y)
+        return self.screen.blit(text, textRect)
 
-    #reorder the list by highest score to lowest
-    redTeam.sort(key=lambda x: x.score, reverse =True)
-    greenTeam.sort(key=lambda x: x.score, reverse =True)
+    def background(self):
+        # Initializing Color
+        red = (128, 23, 23)
+        green = (17, 122, 13)
+        # Create top half sections
+        top_left_rect = pygame.Rect(0, 0, self.X // 2, self.Y // 2)
+        top_right_rect = pygame.Rect(self.X // 2, 0, self.X // 2, self.Y // 2)
+        # Fill the screen with colors
+        self.screen.fill(red, top_left_rect)
+        self.screen.fill(green, top_right_rect)
 
-    #print scores
-    for player in redTeam:
-        name = player.name
-        pts = player.score
-        textBox(screen, str(name), "white", 150, yStart, red)
-        textBox(screen, str(pts), "white", X/2 -100, yStart, red)
-        redTotalPts = redTotalPts + pts
-        yStart += 30
-    yStart = 50
-    for player in greenTeam:
-        name = player.name
-        pts = player.score
-        textBox(screen, name, "white", X//2+150, yStart, green)
-        textBox(screen, str(pts), "white", X -100, yStart, green)
-        greenTotalPts = greenTotalPts + pts
-        yStart += 30
+    def displayScore(self):
+        # Initializing Color
+        red = (128, 23, 23)
+        green = (17, 122, 13)
 
-    #print the total score for each team
-    textBox(screen, str(redTotalPts), "white", X/2 -100, Y//2-16, red)
-    textBox(screen, str(greenTotalPts), "white", X -100, Y//2-16, green)
-    return
+        # Fill the screen with colors
+        yStart = 50
+        redTotalPts = 0
+        greenTotalPts = 0
 
-def timerDisplay(currentTime, startTime, screen):
-    left = 360 - (currentTime-startTime)
-    min = int(left//60)
-    sec = int(left%60)
-    secStr = str(sec)
-    if (sec < 10):
-        secStr = "0" + secStr
-    timer = str(min) + ":" + secStr
-    textBox(screen, "Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
-def countdownHelper(server):
-    countdown(server)
+        # reorder the list by highest score to lowest
+        self.red_players.sort(key=lambda x: x.score, reverse=True)
+        self.green_players.sort(key=lambda x: x.score, reverse=True)
 
-def getUpdates(server, lastUpdate):
+        # print the player name and score for each team
+        for i, player in enumerate(self.red_players):
+            name = player.name
+            pts = player.score
+            if player in self.base_hitters:
+                name = name + " HIT BASE"
+            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
+                name = " "
+                self.blanking = False
+            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
+                self.blanking = True
+            self.textBox(str(name), "white", 150, yStart, red)
+            self.textBox(str(pts), "white", self.X/2 -100, yStart, red)
+            redTotalPts = redTotalPts + pts
+            yStart += 30
+        yStart = 50
+        for i, player in enumerate(self.green_players):
+            name = player.name
+            pts = player.score
+            if player in self.base_hitters:
+                name = name + " HIT BASE"
+            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
+                name = " "
+                self.blanking = False
+            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
+                self.blanking = True
+            self.textBox(name, "white", self.X//2+150, yStart, green)
+            self.textBox(str(pts), "white", self.X -100, yStart, green)
+            greenTotalPts = greenTotalPts + pts
+            yStart += 30
 
-    # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
-    # who calls actionScreen.py? game file can have a function that calls this function
-    msg_array = []
-    msg = ''
+        # print the total score for each team
+        if redTotalPts > greenTotalPts and self.blanking:
+            self.textBox(str(redTotalPts), red, self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
+                self.blanking = False
+                self.last_blank_time = time.time()
+        elif greenTotalPts > redTotalPts and self.blanking:
+            self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), green, self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
+                self.blanking = False
+                self.last_blank_time = time.time()
+        else:
+            self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
+            self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
+            if (int(time.time() - self.last_blank_time) % 2) != 0 and not self.blanking:
+                self.blanking = True
+                self.last_blank_time = time.time()
 
-    # Check if there are updates from the server
-    updateArray = server.points_to_game(lastUpdate)
-    lastUpdate = lastUpdate + len(updateArray)
-    # parse the updateArray
-    for update in updateArray:
-        equip_id = update.get('equip_id')
-        hit_id = update.get('hit_id')
-        points = update.get('points')
-        msg = f'player {equip_id}'
-        # conditions
-        if points == 10:
-            # player hit another player
-            msg = msg + ' hit player ' + hit_id
-            pass
-        elif points == -10:
-            # player hit friendly
-            msg = msg + ' hit friendly ' + hit_id
-            pass
-        elif points == 100:
-            # player hit opponent base
-            msg = msg + ' hit opponent base'
-        msg_array.append(msg)
+    def timerDisplay(self, currentTime, startTime):
+        left = 360 - (currentTime-startTime)
+        minute = int(left//60)
+        second = int(left%60)
+        secStr = str(second)
+        if (second < 10):
+            secStr = "0" + secStr
+        timer = str(minute) + ":" + secStr
+        self.textBox("Time Remaining " + timer, "white", 1400, 1080/2+50, "black")
 
-    print(msg_array)
-    return msg_array
-        # function pass in equip_id -> find player name
+    def getUpdates(self):
+        # Get updates from the server (player_id, hit_id, points), once per second, and update the screen
+        # who calls actionScreen.py? game file can have a function that calls this function
+        # Check if there are updates from the server
+        new_msg_array = []
+        updateArray = self.server.points_to_game(self.last_update)
+        self.last_update = self.last_update + len(updateArray)
+        # parse the updateArray
+        for update in updateArray:
+            equip_id = update.get('equip_id')
+            hit_id = update.get('hit_id')
+            points = update.get('points')
+            for player in self.red_players + self.green_players:
+                if player.equip_id == equip_id:
+                    player.score += int(points)
+                    shooting_player = player
+                elif player.equip_id == hit_id:
+                    shot_player = player
+            # conditions
+            msg = ''
+            if points == 10:
+                # player hit another player
+                msg = f'{shooting_player.name} hit {shot_player.name}'
+            elif points == -10:
+                # player hit friendly
+                msg = f'{shooting_player.name} hit friendly {shot_player.name}'
+            elif points == 100:
+                # player hit opponent base
+                self.base_hitters.append(shooting_player)
+                msg = f'{shooting_player.name} hit '
+                msg += 'Red base' if hit_id == 53 else 'Green base'
+            if msg != '':
+                new_msg_array.append(str(msg))
+        return new_msg_array
 
-        # Update the screen 
-            # callable function that takes in each update and updates the screen
-def updateScreen(msg_array):
-    for msg in msg_array:
-        print(msg)
+    def render(self):
+        self.background()
 
+        if (time.time() - self.last_time) >= 1:
+            for msg in self.getUpdates():
+                self.message.add_line(msg)
+            self.last_time = time.time()
 
-def runGame(redTeam,greenTeam, server):
+        self.displayScore()
 
-    lastTime = 0
-    lastUpdate = 0
-
-    countdownHelper(server)
-    running = True
-    pygame.init()
-    desktop = pygame.display.Info()
-    screen = pygame.display.set_mode((1920,1080))
-    clock = pygame.time.Clock()
-
-    #Screen coordinates
-    X = int(screen.get_width())
-    Y = int(screen.get_height())
-
-    # Initializing Color
-    red = (128, 23, 23)
-    green = (17, 122, 13)
-
-    # Create top half sections
-    top_left_rect = pygame.Rect(0, 0, X // 2, Y // 2)
-    top_right_rect = pygame.Rect(X // 2, 0, X // 2, Y // 2)
-
-    # Create bottom half section
-    bottom_rect = pygame.Rect(0, Y // 2, X, Y // 2)
-
-    
-    
-    # trying messages
-    font = pygame.font.SysFont("Liberation Sans", 30)
-    area = pygame.Rect(20, Y//2 + 50, X-40, Y//2 - 150)
-    box = area.inflate(2, 2)
-    pygame.draw.rect(screen, "blue", box, 1)
-    
-    pygame.time.delay(500)
-    message = TextScroll(area, font, "white", "black", GLOBALTEXT, ms_per_line=5)
-        
-
-    screen.fill((0, 0, 0), bottom_rect)
-    
-    # Create text box for game events
-    countdown = time.time()
-    while running:
-
-        for event in pygame.event.get():
-        # Check for the quit event
-            if event.type == pygame.QUIT:
-                # Quit the game
-                pygame.quit()
-                sys.exit()
-            # Check for the fullscreen toggle event
-            if event.type == pygame.KEYDOWN:
-                # Toggle fullscreen mode
-                if event.key == pygame.K_F11:
-                    pygame.display.toggle_fullscreen()
-                # Check for the quit event
-                if event.key == pygame.K_ESCAPE:
-                    # Quit the game
-                    pygame.quit()
-                    sys.exit()
-
-        if (time.time() - lastTime) >= 1000:
-            msg_array = getUpdates(server, lastUpdate)
-            lastTime = time.time()
-            # Update the screen with the new messages
-            updateScreen(msg_array)
-
-        
-        
-        
-        
-        
-        
-        screen.fill(red, top_left_rect)
-        screen.fill(green, top_right_rect)
-        
-        displayScore(screen, redTeam, greenTeam)
-        
         # trying to update messages
-        message.update()
-        message.draw(screen)
-        
-        if ( time.time() - countdown >= 360):
-            running = False
-            return
-        timerDisplay(time.time(), countdown, screen)
-        pygame.display.flip()
-        clock.tick(60)
+        self.message.update()
+        self.message.draw(self.screen)
+
+        if ( time.time() - self.countdown >= 360):
+            self.quit()
+
+        self.timerDisplay(time.time(), self.countdown)
+
+    def run(self):
+        # Create bottom half section
+        bottom_rect = pygame.Rect(0, self.Y // 2, self.X, self.Y // 2)
+
+        # trying messages
+        box = pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150).inflate(2, 2)
+        pygame.draw.rect(self.screen, "blue", box, 1)
+
+        self.screen.fill("black", bottom_rect)
