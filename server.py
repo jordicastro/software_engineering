@@ -2,7 +2,7 @@ from asyncio import sleep
 import socket, threading
 
 RECEIVE_PORT = 7501
-BROADCAST_PORT = 7502
+BROADCAST_PORT = 7500
 FORMAT = 'utf-8'
 SERVER = '127.0.0.1'
 RECEIVE_ADDR = (SERVER, RECEIVE_PORT)
