@@ -101,32 +101,31 @@ class ActionScreen:
             for player in self.red_players + self.green_players:
                 if player.equip_id == equip_id:
                     player.score += int(points)
-            msg = f'player {equip_id}'
+                    name = player.name
+                if player.equip_id == hit_id:
+                    hit_name = player.name
             # conditions
+            msg = ''
             if points == 10:
                 # player hit another player
-                msg = msg + ' hit player ' + str(hit_id)
+                msg = f'{name} hit {hit_name}'
             elif points == -10:
                 # player hit friendly
-                msg = msg + ' hit friendly ' + str(hit_id)
+                msg = f'{name} hit friendly {hit_name}'
             elif points == 100:
                 # player hit opponent base
-                msg = msg + ' hit opponent base'
+                msg = f'{name} hit opponent base'
             if msg != '':
                 new_msg_array.append(str(msg))
         return new_msg_array
-
-    def updateScreen(self):
-        # Update the screen with the new messages
-        self.message = TextScroll(pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150), pygame.font.SysFont("Liberation Sans", 30), "white", "black", self.msg_array, ms_per_line=5)
 
     def render(self):
         self.background()
 
         if (time.time() - self.last_time) >= 1:
-            self.msg_array += self.getUpdates()
+            for msg in self.getUpdates():
+                self.message.add_line(msg)
             self.last_time = time.time()
-            self.updateScreen()
 
         self.displayScore()
 
