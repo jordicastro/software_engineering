@@ -2,8 +2,9 @@ from database import Database
 from server import Server
 from player import Player
 from splash import splashScreen
-#from actionScreen import ActionScreen
 from entryScreen import EntryScreen
+from countdown import countdown
+#from actionScreen import ActionScreen
 import pygame, sys
 
 # Game class
@@ -25,9 +26,12 @@ class Game:
         self.running: bool = True
         self.page: str = 'entry'
 
-    def startGame(self):
-        print("Starting Game")
-        self.page = 'action'
+    def stop(self):
+        self.running = False
+        pygame.quit()
+        self.db.close()
+        self.server.stop()
+        sys.exit()
 
     # Handling events function
     def events(self):
@@ -39,15 +43,12 @@ class Game:
                 pass
             # If pygame quits, close the database and exit the program
             if event.type == pygame.QUIT:
-                pygame.quit()
-                self.db.close()
-                self.server.stop()
-                sys.exit()
+                self.stop()
             # Check for key presses
             elif event.type == pygame.KEYDOWN:
                 # Escape key closes the program
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                    self.stop()
                 # F11 key toggles fullscreen
                 if event.key == pygame.K_F11:
                     if self.screen.get_flags() & pygame.FULLSCREEN:
@@ -78,10 +79,14 @@ class Game:
         else:
             return self.green_players
 
+    def startGame(self):
+        print("Starting Game")
+        self.page = 'action'
+
     # Run main game
     def run(self):
         # Splash screen
-        splashScreen()
+        splashScreen(self.stop)
 
         # Check if player exists in game already
         def checkPlayer(player: Player) -> bool:
@@ -98,19 +103,41 @@ class Game:
             else:
                 self.green_players.append(player)
 
-        # Entry screen
+        # Entry Screen Creation
         self.screen = pygame.display.set_mode((self.X, self.Y))
         self.entry_screen = EntryScreen(self.screen, self.db, self.server, self.getPlayers, checkPlayer, addPlayer, self.startGame)
         self.entry_screen.run()
 
-        # Main game loop
-        print("Running Game")
-        while self.running:
+        # Entry Screen Loop
+        while self.page == 'entry' and self.running:
             # Handle events and render game window
             self.events()
             self.render()
             pygame.display.update()
             self.clock.tick(60) # 60 FPS
+
+        # Check if game is still running
+        if not self.running:
+            pygame.quit()
+            self.db.close()
+            self.server.stop()
+            sys.exit()
+
+        # Countdown Screen
+        countdown(self.server, self.stop)
+
+        # Action Screen Creation
+        self.screen = pygame.display.set_mode((self.X, self.Y))
+        #self.action_screen = ActionScreen(self.screen, self.db, self.server, self.getPlayers)
+        #self.action_screen.run()
+
+        # Action Screen Loop
+        while self.page == 'action' and self.running:
+            # Handle events and render game window
+            self.events()
+            self.render()
+            pygame.display.update()
+            self.clock.tick(60)
 
         # Quit game
         pygame.quit()

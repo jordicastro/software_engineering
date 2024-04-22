@@ -151,15 +151,12 @@ class EntryScreen:
 
     def run(self):
         # Render background
-        print("Rendering the Background")
         self.background()
 
         # Initialize player lines
-        print("Initializing Player Lines")
         self.initPlayerLines(15)
 
         # Create input boxes
-        print("Creating Input Boxes")
         self.id_field = InputBox(self.X/2-105, self.Y/2+100+75, 200, 32, True)
         self.input_boxes.append(self.id_field)
         self.equipment_field = InputBox(self.X/2-105, self.Y/2+50+75, 200, 32, True)
@@ -181,8 +178,5 @@ class EntryScreen:
                 print("Player or equipment already in game")
 
         # Create buttons
-        print("Creating Buttons")
         self.buttons.append(Button(self.X/2-64, self.Y/2+200+10, 128, 32, onAddPlayer, 'Add Player'))
         self.buttons.append(Button(self.X/2-35, self.Y/2+250+10, 70, 32, self.start_action, 'Start'))
-
-        print("Finished Entry Initialization")
