@@ -124,6 +124,17 @@ class Button():
         self.surface = pg.Surface((self.width, self.height))
         self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
+        if not isinstance(FONT, pg.font.Font):
+            raise TypeError("FONT must be a pygame.font.Font object")
+
+        if not isinstance(text, str):
+            text = str(text)
+
+        try:
+            self.button_surf = FONT.render(text, True, (20, 20, 20))
+        except pg.error as e:
+            print(f"Pygame error: {e}")
+
         self.button_surf = FONT.render(text, True, (20, 20, 20))
 
     def getText(self):

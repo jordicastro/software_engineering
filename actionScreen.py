@@ -23,6 +23,7 @@ def events():
                 # Quit the game
                 pygame.quit()
                 sys.exit()
+
 # Render text box
 def textBox(screen, input, color, x, y, bg):
     font = pygame.font.Font('freesansbold.ttf', 32)
@@ -37,7 +38,7 @@ def displayScore(screen, redTeam, greenTeam):
     green = (17, 122, 13)
     X = int(screen.get_width())
     Y = int(screen.get_height())
-    
+
     # Fill the screen with colors
     yStart = 50
     redTotalPts = 0
@@ -166,7 +167,6 @@ def runGame(redTeam,greenTeam, server):
     # Create text box for game events
     countdown = time.time()
     while running:
-
         for event in pygame.event.get():
         # Check for the quit event
             if event.type == pygame.QUIT:
