@@ -49,13 +49,13 @@ def countdown(server: Server, quit: Callable):
         i = i-1
 
         for event in pygame.event.get():
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        quit()
-                    else:
-                        return
+                else:
+                    server.start_traffic()
+                    return
 
     server.start_traffic()

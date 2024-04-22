@@ -22,7 +22,7 @@ class TextScroll:
         self.surface = pygame.Surface(self.size, flags=pygame.SRCALPHA)
         self.surface.fill(bk_color)
         self.font = font
-        self.lines = text.split('\n')
+        self.lines = text
         self.ms_per_line = ms_per_line
         self.y = 0
         self.y_delta = self.font.size("M")[1]
@@ -33,8 +33,7 @@ class TextScroll:
         if self.y + self.y_delta > self.size[1]:  # line does not fit in remaining space
             self.surface.blit(self.surface, (0, -self.y_delta))  # scroll up
             self.y += -self.y_delta  # backup a line
-            pygame.draw.rect(self.surface, self.bk_color,
-                             (0, self.y, self.size[0], self.size[1] - self.y))
+            pygame.draw.rect(self.surface, self.bk_color, (0, self.y, self.size[0], self.size[1] - self.y))
 
         text = self.font.render(line, True, self.fg_color)
         # pygame.draw.rect(text, GREY, text.get_rect(), 1)  # for demo show render area
@@ -52,6 +51,17 @@ class TextScroll:
             self._update_line(line)
             self.dirty = True
             self.update()  # do it again to catch more than one event per tick
+
+    # add a line of text to the display
+    def add_line(self, line):
+        self.lines.append(line)
+        self.dirty = True
+
+    # clear all lines of text
+    def clear(self):
+        self.lines.clear()
+        self.surface.fill(self.bk_color)
+        self.dirty = True
 
     # call draw from pygam main loop after update
     def draw(self, screen):

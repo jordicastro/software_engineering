@@ -4,7 +4,7 @@ from player import Player
 from splash import splashScreen
 from entryScreen import EntryScreen
 from countdown import countdown
-#from actionScreen import ActionScreen
+from actionScreen import ActionScreen
 import pygame, sys
 
 # Game class
@@ -69,8 +69,7 @@ class Game:
         if self.page == 'entry':
             self.entry_screen.render()
         elif self.page == 'action':
-            #self.action_screen.render()
-            pass
+            self.action_screen.render()
 
     # Return players of a given team
     def getPlayers(self, team: bool):
@@ -118,18 +117,15 @@ class Game:
 
         # Check if game is still running
         if not self.running:
-            pygame.quit()
-            self.db.close()
-            self.server.stop()
-            sys.exit()
+            self.stop()
 
         # Countdown Screen
         countdown(self.server, self.stop)
 
         # Action Screen Creation
         self.screen = pygame.display.set_mode((self.X, self.Y))
-        #self.action_screen = ActionScreen(self.screen, self.db, self.server, self.getPlayers)
-        #self.action_screen.run()
+        self.action_screen = ActionScreen(self.screen, self.db, self.server, self.red_players, self.green_players, self.stop)
+        self.action_screen.run()
 
         # Action Screen Loop
         while self.page == 'action' and self.running:
@@ -140,7 +136,4 @@ class Game:
             self.clock.tick(60)
 
         # Quit game
-        pygame.quit()
-        self.db.close()
-        self.server.stop()
-        sys.exit()
+        self.stop()
