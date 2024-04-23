@@ -129,6 +129,7 @@ class ActionScreen:
             elif points == 100:
                 # player hit opponent base
                 self.base_hitters.append(shooting_player)
+                self.last_base_hit.append(time.time())
                 msg = f'{shooting_player.name} hit '
                 msg += 'Red base' if hit_id == 53 else 'Green base'
             if msg != '':
