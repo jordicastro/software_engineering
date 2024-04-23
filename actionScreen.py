@@ -26,9 +26,9 @@ class ActionScreen:
         self.blanking: bool = False
 
     # Render text box
-    def textBox(self, input, color, x, y, bg):
+    def textBox(self, input, color, x, y, bg, hit_base=False):
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render(input, True, (color), (bg))
+        text = font.render(input + " HIT BASE" if hit_base else input, True, (color), (bg))
         textRect = text.get_rect()
         textRect.bottomleft = (x, y)
         return self.screen.blit(text, textRect)
@@ -62,9 +62,7 @@ class ActionScreen:
         for i, player in enumerate(self.red_players):
             name = player.name
             pts = player.score
-            if player in self.base_hitters:
-                name = name + " HIT BASE"
-            self.textBox(name, red if self.blanking and i == 0 else "white", 150, yStart, red)
+            self.textBox(name, red if self.blanking and i == 0 else "white", 150, yStart, red, player in self.base_hitters)
             self.textBox(str(pts), red if self.blanking and i == 0 else "white", self.X/2 -100, yStart, red)
             redTotalPts = redTotalPts + pts
             yStart += 30
@@ -72,9 +70,7 @@ class ActionScreen:
         for i, player in enumerate(self.green_players):
             name = player.name
             pts = player.score
-            if player in self.base_hitters:
-                name = name + " HIT BASE"
-            self.textBox(name, green if self.blanking and i == 0 else "white", self.X//2+150, yStart, green)
+            self.textBox(name, green if self.blanking and i == 0 else "white", self.X//2+150, yStart, green, player in self.base_hitters)
             self.textBox(str(pts), green if self.blanking and i == 0 else "white", self.X -100, yStart, green)
             greenTotalPts = greenTotalPts + pts
             yStart += 30
