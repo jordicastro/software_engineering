@@ -18,11 +18,11 @@ class ActionScreen:
         self.countdown = time.time()
         self.message = TextScroll(pygame.Rect(20, self.Y//2 + 50, self.X-40, self.Y//2 - 150), pygame.font.SysFont("Liberation Sans", 30), "white", "black", [], ms_per_line=5)
         self.last_time: int = 0
-        self.last_blank_time: int = 0
         self.last_update: int = 0
         self.msg_array: list[str] = []
         self.quit = quit
         self.base_hitters: list[Player] = []
+        self.last_base_hit: list[int] = []
         self.blanking: bool = False
 
     # Render text box
@@ -64,13 +64,8 @@ class ActionScreen:
             pts = player.score
             if player in self.base_hitters:
                 name = name + " HIT BASE"
-            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
-                name = " "
-                self.blanking = False
-            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
-                self.blanking = True
-            self.textBox(str(name), "white", 150, yStart, red)
-            self.textBox(str(pts), "white", self.X/2 -100, yStart, red)
+            self.textBox(name, red if self.blanking and i == 0 else "white", 150, yStart, red)
+            self.textBox(str(pts), red if self.blanking and i == 0 else "white", self.X/2 -100, yStart, red)
             redTotalPts = redTotalPts + pts
             yStart += 30
         yStart = 50
@@ -79,13 +74,8 @@ class ActionScreen:
             pts = player.score
             if player in self.base_hitters:
                 name = name + " HIT BASE"
-            if self.blanking and (int(time.time() - self.last_blank_time) % 2) == 0 and i == 0:
-                name = " "
-                self.blanking = False
-            elif not self.blanking and (int(time.time() - self.last_blank_time) % 2) != 0 and i == 0:
-                self.blanking = True
-            self.textBox(name, "white", self.X//2+150, yStart, green)
-            self.textBox(str(pts), "white", self.X -100, yStart, green)
+            self.textBox(name, green if self.blanking and i == 0 else "white", self.X//2+150, yStart, green)
+            self.textBox(str(pts), green if self.blanking and i == 0 else "white", self.X -100, yStart, green)
             greenTotalPts = greenTotalPts + pts
             yStart += 30
 
@@ -93,21 +83,12 @@ class ActionScreen:
         if redTotalPts > greenTotalPts and self.blanking:
             self.textBox(str(redTotalPts), red, self.X/2 -100, self.Y//2-16, red)
             self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
-            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
-                self.blanking = False
-                self.last_blank_time = time.time()
         elif greenTotalPts > redTotalPts and self.blanking:
             self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
             self.textBox(str(greenTotalPts), green, self.X -100, self.Y//2-16, green)
-            if (int(time.time() - self.last_blank_time) % 2) == 0 and self.blanking:
-                self.blanking = False
-                self.last_blank_time = time.time()
         else:
             self.textBox(str(redTotalPts), "white", self.X/2 -100, self.Y//2-16, red)
             self.textBox(str(greenTotalPts), "white", self.X -100, self.Y//2-16, green)
-            if (int(time.time() - self.last_blank_time) % 2) != 0 and not self.blanking:
-                self.blanking = True
-                self.last_blank_time = time.time()
 
     def timerDisplay(self, currentTime, startTime):
         left = 360 - (currentTime-startTime)
@@ -161,6 +142,11 @@ class ActionScreen:
             for msg in self.getUpdates():
                 self.message.add_line(msg)
             self.last_time = time.time()
+            self.blanking = not self.blanking
+            for i, hit_time in enumerate(self.last_base_hit):
+                if (time.time() - hit_time) >= 10:
+                    self.base_hitters.pop(i)
+                    self.last_base_hit.pop(i)
 
         self.displayScore()
 
